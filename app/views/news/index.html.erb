@@ -1,0 +1,31 @@
+<center>
+  <tr>
+    <td>
+      <table border="0" cellpadding="0" cellspacing="0" class="itemlist">
+        <tbody>
+        <% @new.each_with_index do |new,i| %>
+          <%# if new.isurl==1 %>
+            <tr class="athing" >
+              <td align="right" valign="top" class="title">
+                <span class=rank"> <%= i + 1 %>.  </span>
+              </td>
+
+              <td valign="top" class="votelinks">
+                <center>
+                  ▲
+                </center>
+              </td>
+              <td class="title">
+                <a href="<%= new.url %>" class="storylink" rel="nofollow"> <%= new.title %> </a>
+              </td>
+            </tr>
+          <%# end %>
+        <% end %>
+        </tbody>
+
+      </table>
+
+    </td>
+
+  </tr>
+</center>

@@ -1,16 +1,75 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Hackernews8ferran</title>
+    <title>Hacker News</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag "news.css" %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
   <body>
+  <center>
+  <table id="hrmain" border="0" cellpadding="0" cellspacing="0" width="85%" bgcolor="#f6f6ef">
+    <tbody>
+    <tr>
+      <td bgcolor="#ff660">
+        <table border="0" cellpadding="0" cellspacing="0" width="85%" style="padding:2px">
+          <tbody>
+          <tr>
+            <td style="width:18px;padding-right:4px">
+              <a href="localhost:3000/news">
+                <img src="https://news.ycombinator.com/y18.gif" width="18" height="18" style="border:1px white solid;">
+              </a>
+
+
+            </td>
+            <td style="line-height:12pt; height:10px;">
+                  <span class="pagetop">
+                    <b class="hnname">
+                     <%= link_to "Hacker News", news_path(@news) %>
+                    </b>
+                      <a href="">welcome</a>
+                      |
+                    <% if @paginanewest %>
+                      <span class="topsel">
+                        <%= link_to "newest", newest_path(@newest)%>
+                      </span>
+                    <% else %>
+                      <%= link_to "newest", newest_path(@newest)%>
+                    <% end %>
+                      |
+                      <a href="">threads</a>
+                      |
+                      <a href="">past</a>
+                      |
+                      <a href="">comments</a>
+                      |
+                      <a href="">ask</a>
+                      |
+                      <a href="">show</a>
+                      |
+                      <a href="">jobs</a>
+                      |
+                    <%= link_to "submit", submit_path(@submit) %>
+                  </span>
+            </td>
+            <td style="text-align:right; padding-right: 4px">
+              <span class="pagetop">
+                UserDefault
+              </span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
     <%= yield %>
+    </tbody>
+  </table>
+  </center>
+
   </body>
 </html>
