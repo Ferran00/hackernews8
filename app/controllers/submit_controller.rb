@@ -17,4 +17,4 @@ class SubmitController < ApplicationController
       render :submit
     end
   end
-end
+end 
