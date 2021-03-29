@@ -6,7 +6,7 @@
            <% @new.each_with_index do |new,i| %>
               <tr class="athing" >
                 <td align="right" valign="top" class="title">
-                  <span class=rank"> <%= i+1 %>.  </span>
+                  <span class="rank"> <%= i+1 %>.  </span>
                 </td>
 
                 <td valign="top" class="votelinks"> ▲ </td>
@@ -14,6 +14,24 @@
                   <a href="<%= new.url %>" > <%= new.title %> </a>
                 </td>
               </tr>
+              <tr >
+                <td colspan="2"></td>
+                <td class="subtext">
+                  <span class="score"> <%= new.points %> points </span>
+                   by 
+                  None
+                  <%  quant=(Time.now-new.created_at).round %>
+                  <% if quant < 60 %>
+                    <span class="age"> <%= quant %> seconds ago </span>
+                  <% elsif quant < 3600 then  quant=(quant/60).round %>
+                    <span class="age"> <%= quant %> minutes ago </span>
+                  <% else quant=(quant/3600).round%>
+                    <span class="age"> <%= quant %> hours ago </span>
+                  <% end %>
+                  | hide  |  0 comments
+                  
+                </td>
+              </tr> 
             <% end %>
             </tbody>
 

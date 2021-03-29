@@ -77,5 +77,6 @@ Rails.application.configure do
   
   #Ferran environment:
   config.hosts << "0208bd7a5d0145c3b6e2956f501fa032.vfs.cloud9.us-east-1.amazonaws.com"
-  
+  #arnaldo te configura
+  config.hosts << "d698a4fec23b4d97ad341be3972c6be5.vfs.cloud9.us-east-1.amazonaws.com"
 end
