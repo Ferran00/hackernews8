@@ -10,5 +10,6 @@ class CreateNews < ActiveRecord::Migration[6.1]
 
       t.timestamps
     end
+    add_foreign_key :news, :users, column: :author    #by Ferran. ni idea de si funciona
   end
 end
