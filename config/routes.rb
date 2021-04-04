@@ -5,4 +5,5 @@ Rails.application.routes.draw do
   get "/news", to: "news#index"
   get "/newest", to: "new#index"
   get "/submit", to: "submit#index"
+  get "/item", to: "news#item"
   end
