@@ -1,5 +1,21 @@
-<h1><%= @ask.title %></h1>
-
-<p><%= @ask.text %></p>
-
-<p>això està molt incomplet</p>
+<center>
+    <tr id="pagespace" style="height=10px"> </tr>
+    <tr>
+        <td>
+            <table class="fatittem" border="0">
+                <tbody>
+                    <tr class="athing">
+                        <td class="title">
+                            <a href=<% @ask.url %> class="storylink"> Ask HN:  <%= @ask.title %> </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        
+    </tr>
+    <tr>
+        <td colspan="2"></td>
+        <td> <%= @ask.text %></td>
+    </tr>
+</center>
