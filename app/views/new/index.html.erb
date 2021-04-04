@@ -11,7 +11,7 @@
 
                 <td valign="top" class="votelinks"> ▲ </td>
                 <td class="title">
-                <% if new.text=="" %>
+                <% if new.isurl==1 %>
                   <a href="<%= new.url %>" > <%= new.title %> </a>
                 <% else %>
                   Ask HN: <%= link_to  new.title, :controller => :news, :action => :item, id: new.id %>

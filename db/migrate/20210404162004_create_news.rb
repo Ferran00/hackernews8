@@ -6,6 +6,7 @@ class CreateNews < ActiveRecord::Migration[6.1]
       t.text :text
       t.integer :isurl
       t.integer :points
+      t.string :author
 
       t.timestamps
     end
