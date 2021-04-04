@@ -5,17 +5,19 @@
             <table class="fatittem" border="0">
                 <tbody>
                     <tr class="athing">
+                        <td colspan="2"></td>
                         <td class="title">
                             <a href=<% @ask.url %> class="storylink"> Ask HN:  <%= @ask.title %> </a>
                         </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td> <%= @ask.text %> </td>
                     </tr>
                 </tbody>
             </table>
         </td>
         
     </tr>
-    <tr>
-        <td colspan="2"></td>
-        <td> <%= @ask.text %></td>
-    </tr>
+    
 </center>
