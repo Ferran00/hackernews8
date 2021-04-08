@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_04_162004) do
+ActiveRecord::Schema.define(version: 2021_04_07_184239) do
 
   create_table "news", force: :cascade do |t|
     t.string "title"
@@ -30,6 +30,9 @@ ActiveRecord::Schema.define(version: 2021_04_04_162004) do
     t.integer "karma"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "google_token"
+    t.string "google_refresh_token"
   end
 
+  add_foreign_key "news", "users", column: "author"
 end
