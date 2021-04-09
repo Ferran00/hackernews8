@@ -34,5 +34,4 @@ ActiveRecord::Schema.define(version: 2021_04_07_184239) do
     t.string "google_refresh_token"
   end
 
-  add_foreign_key "news", "users", column: "author"
 end
