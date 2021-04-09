@@ -29,8 +29,10 @@
                     <span class="age"> <%= quant %> seconds ago </span>
                   <% elsif quant < 3600 then  quant=(quant/60).round %>
                     <span class="age"> <%= quant %> minutes ago </span>
-                  <% else quant=(quant/3600).round%>
+                  <% elsif quant < 86400 then  quant=(quant/3600).round%>
                     <span class="age"> <%= quant %> hours ago </span>
+                  <% else quant=(quant/86400).round %>
+                    <span class="age"> <%= quant %> days ago </span>
                   <% end %>
                   | hide  |  0 comments
                   
