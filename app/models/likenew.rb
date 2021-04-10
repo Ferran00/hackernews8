@@ -1,0 +1,2 @@
+class Likenew < ApplicationRecord
+end
