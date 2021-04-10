@@ -6,5 +6,6 @@ class NewsController < ApplicationController
   
   def item
     @ask = New.find(params[:id])
+    @comments = Comment.where("new_id == @ask.id").all#.count
   end
 end
