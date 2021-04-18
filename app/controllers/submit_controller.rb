@@ -1,6 +1,6 @@
 class SubmitController < ApplicationController
   def index
-
+    
   end
 
 

@@ -5,44 +5,124 @@
             <table class="fatittem" border="0">
                 <tbody>
                     <tr class="athing">
+                        <td></td>
                         <td colspan="2"></td>
                         <td class="title">
                             <a href=<% @ask.url %> class="storylink"> Ask HN:  <%= @ask.title %> </a>
                         </td>
                     </tr>
-                    <td colspan="2"></td>
-                    <tr class="subtext">
-                      <span class="score"> <%= @ask.points %> points </span>
-                       by 
-                      None
-                      <%  quant=(Time.now-@ask.created_at).round %>
-                      <% if quant < 60 %>
-                        <span class="age"> <%= quant %> seconds ago </span>
-                      <% elsif quant < 3600 then  quant=(quant/60).round %>
-                        <span class="age"> <%= quant %> minutes ago </span>
-                      <% elsif quant < 86400 then  quant=(quant/3600).round%>
-                        <span class="age"> <%= quant %> hours ago </span>
-                      <% else quant=(quant/86400).round %>
-                        <span class="age"> <%= quant %> days ago </span>
-                      <% end %>
-                     | hide | past | un‑favorite  |  
+                    <tr>
+                        <td></td>
+                      <td colspan="2"></td>
+                      <td class="subtext">
+                          <span class="score"> <%= @ask.points %> points </span>
+                           by 
+                          None
+                          <%  quant=(Time.now-@ask.created_at).round %>
+                          <% if quant < 60 %>
+                            <span class="age"> <%= quant %> seconds ago </span>
+                          <% elsif quant < 3600 then  quant=(quant/60).round %>
+                            <span class="age"> <%= quant %> minutes ago </span>
+                          <% elsif quant < 86400 then  quant=(quant/3600).round%>
+                            <span class="age"> <%= quant %> hours ago </span>
+                          <% else quant=(quant/86400).round %>
+                            <span class="age"> <%= quant %> days ago </span>
+                          <% end %>
+                             | hide | past | un‑favorite  |  
                      
-                     <% count = 0 %>
-                     <% @comments.each do |comment| %>
-                     <% count = count + 1 %>
-                     <% end %>
+                         <%# count = 0 %>
+                         <%# @comments.each do |comment| %>
+                         <%# count = count + 1 %>
+                         <%# end %>
                      
-                     <%= count %>
+                         <%#= count %>
                      
-                       comments
+                          69 comments
                        
-                     
+                        </td>
                         
                         
                     </tr>
+                    <tr style="height:2px"></tr>
                     <tr>
+                        <td></td>
                         <td colspan="2"></td>
                         <td> <%= @ask.text %> </td>
+                    </tr>
+                    <tr style="height:10px"></tr>
+                    <tr>
+                        <td></td>
+                        <td colspan="2"></td>
+                        <td>
+                            <%= form_with model: @comment do |form| %>
+                                <%= form.hidden_field :new_id, value: @ask.id %>
+                            <table class="fatitem" border="0">
+                                <tbody>
+                                    <tr> 
+                                        <td>
+                                            <%= form.text_area :text, :size=>"50" %> 
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= form.submit "add comment"%> </td>
+                                    </tr>
+                                    
+                            
+                                </tbody>
+                            </table>
+                            <% end %>
+                           
+                        
+                        </td>
+                        <br>
+                        <br>
+                        
+                        <table border="0" class="comment-tree">
+                            <tbody>
+                                <% identificador=@ask.id %>
+                                <% Comment.where(new_id: identificador).order('points DESC').all.each do |comment| %>
+                                <tr class="athing comtr">
+                                    <td>
+                                        <table border="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="ind"></td>
+                                                    <td></td>
+                                                    <td class="default">
+                                                        <div style="margin-top:2px, margin-bottom:-10px;">
+                                                            <span class="comhead">
+                                                                <%= User.find(comment.user_id).username %>
+                                                                
+                                                                    <%  quant=(Time.now-comment.created_at).round %>
+                                                                    <% if quant < 60 %>
+                                                                        <span class="age"> <%= quant %> seconds ago </span>
+                                                                     <% elsif quant < 3600 then  quant=(quant/60).round %>
+                                                                        <span class="age"> <%= quant %> minutes ago </span>
+                                                                     <% elsif quant < 86400 then  quant=(quant/3600).round%>
+                                                                        <span class="age"> <%= quant %> hours ago </span>
+                                                                     <% else quant=(quant/86400).round %>
+                                                                        <span class="age"> <%= quant %> days ago </span>
+                                                                     <% end %>
+                                                                     
+
+                                                            </span>
+                                                        </div>
+                                                        <br>
+                                                        <div class="comment">
+                                                            <span class="comtext c00">
+                                                                <%= comment.text %>
+                                                                <div class="reply"></div>
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <% end %>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </tr>
                 </tbody>
             </table>
