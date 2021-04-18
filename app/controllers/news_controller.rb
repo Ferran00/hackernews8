@@ -9,6 +9,15 @@ class NewsController < ApplicationController
     @comments = Comment.where("new_id == @ask.id").all#.count
   end
   
+  def createComment
+    if !params[:text].blank?
+      @comment = Comment.new(text: params[:text], points: 0, user_id: 1, new_id: params[:new_id]) #tenim hardcodejat usuari 1, ojo amb tenir un usuari
+      @comment.save
+      #else redirigir a pagina d'error
+    end
+    redirect_to controller: 'news', action: 'item', id: params[:new_id]
+  end
+  
   def vote
     Likenew.new(user_id: params[:userid], new_id: params[:newid])
     redirect_to :news
