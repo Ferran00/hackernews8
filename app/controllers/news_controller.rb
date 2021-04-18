@@ -47,4 +47,14 @@ class NewsController < ApplicationController
     Likecomment.where(:user_id => params[:userid]).where(:comment_id => params[:commentid]).delete
     redirect_to :item
   end
+  
+  #ferran. func recursiva per a mostrar replies de replies
+  def mostrarReplies(idParentComment2)
+    Comment.where(comment_id: idParentComment2).order('points DESC').all.each do |reply1|
+      #pintarlo (copiar aquí el codi html que ha fet l'arnau? o on es fa?)
+      
+      mostrarReplies(reply1.id)
+    end
+  end
+  helper_method :mostrarReplies
 end
