@@ -8,8 +8,19 @@
                 <td align="right" valign="top" class="title">
                   <span class="rank"> <%= i+1 %>.  </span>
                 </td>
-
-                <td valign="top" class="votelinks"> ▲ </td>
+                <td valign="top" class="votelinks">
+                  <% if !@current_user.nil? %>
+                    <% @userliked.each do |userliked| %>
+                      <% if new.id == userliked.new_id %>
+                        <%= link_to '▲','/new/vote'+new.id.to_s, method: :post%>
+                      <%else %>
+                        <%= link_to '▼','/new/unvote'+new.id.to_s, method: :post%>
+                      <% end %>
+                    <% end %>
+                  <% else %>
+                    <%= link_to '▲','/auth/google_oauth2', method: :get%>
+                  <% end %>
+                </td>
                 <td class="title">
                 <% if new.isurl==1 %>
                   <a href="<%= new.url %>" > <%= new.title %> </a>
@@ -34,7 +45,8 @@
                   <% else quant=(quant/86400).round %>
                     <span class="age"> <%= quant %> days ago </span>
                   <% end %>
-                  | hide  |  0 comments
+                  if (votado por el user) | unvote
+                  | 0 comments
                   
                 </td>
               </tr> 
