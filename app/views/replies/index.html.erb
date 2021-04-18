@@ -1,0 +1,86 @@
+<center>
+    <tr id="pagespace" style="height=10px"> </tr>
+    <tr>
+        <td>
+            <table class="fatittem" border="0">
+                <tbody>
+                    <tr class="athing">
+                      <td class = "ind"></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <div class="votearrow" title="upvote"> ▲ </div>
+                            </center>
+                        </td>
+                        
+                        
+                        <td class = "default">
+                          <div style="margin-top:2px; margin-bottom:-10px;">
+                            <span class= "comhead">
+                              
+                              <%= User.find(@parent.user_id).username %>
+                            </span>
+                            <span class="age">
+                              <%  quant=(Time.now-@parent.created_at).round %>
+                              <% if quant < 60 %>
+                                <%= quant %> seconds ago
+                              <% elsif quant < 3600 then  quant=(quant/60).round %>
+                                <%= quant %> minutes ago
+                              <% elsif quant < 86400 then  quant=(quant/3600).round%>
+                                <%= quant %> hours ago
+                              <% else quant=(quant/86400).round %>
+                                <%= quant %> days ago
+                              <% end %>
+                            </span>
+                            <span id="unv_26831354"></span>
+                            <span class="par">
+                               | parent [-] 
+                            </span>
+                            <span class ="storyon">
+                               | on: 
+                               <a href="item?id=">
+                                 <%= %>
+                               </a>
+                            </span>
+                          </div>
+                          <br>
+                          <div class="comment">
+                            <span class="commtext c00">
+                            <%= @parent.text %>
+                            </span>
+                          </div>
+                          
+                          <tr style="height:10px"></tr>
+                          
+                          <tr>
+                            <td colspan="2"></td>
+                            <td> 
+                              <%= form_with model: @comment do |form| %>
+                                <%= form.hidden_field :comment_id, value: @parent.id %>
+                              <table class="fatitem" border="0">
+                                <tbody>
+                                    <tr> 
+                                        <td>
+                                            <%= form.text_area :text, :size=>"50" %> 
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= form.submit "reply"%> </td>
+                                    </tr>
+                                </tbody>
+                              </table>
+                            <% end %>
+                            </td>
+                          </tr>
+                          
+                          
+                        </td>
+                        
+                    </tr>
+                </tbody>
+              </table>
+        </td>
+        
+    </tr>
+    
+    
+  </center>

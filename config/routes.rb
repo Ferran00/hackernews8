@@ -16,4 +16,9 @@ Rails.application.routes.draw do
   # Routes for Google authentication
   get "auth/:provider/callback", to: "sessions#googleAuth"
   get "auth/failure", to: redirect('/')
+  
+  get "/reply", to: "replies#index"
+  
+  post "/reply", to: "replies#createReply"
+  
   end
