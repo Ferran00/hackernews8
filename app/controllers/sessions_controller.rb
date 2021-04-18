@@ -3,8 +3,8 @@ def googleAuth
     access_token = request.env["omniauth.auth"]
     user = User.from_omniauth(access_token)
     
-    session[:user_id] = access_token["uid"]
-    @current_user = @user_id
+    # session[:user_id] = access_token["uid"]
+    # @current_user = @user_id
     
     log_in(user)
     # Access_token is used to authenticate request made from the rails application to the google server
