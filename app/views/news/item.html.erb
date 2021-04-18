@@ -5,14 +5,22 @@
             <table class="fatittem" border="0">
                 <tbody>
                     <tr class="athing">
-                        <td></td>
-                        <td colspan="2"></td>
+                        
+                        <td align="right" valign="top" class="title">
+                            <span class="rank"></span>
+                        </td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <div class="votearrow" title="upvote"> ▲ </div>
+                            </center>
+                        </td>
+                        
                         <td class="title">
+                            
                             <a href=<% @ask.url %> class="storylink"> Ask HN:  <%= @ask.title %> </a>
                         </td>
                     </tr>
                     <tr>
-                        <td></td>
                       <td colspan="2"></td>
                       <td class="subtext">
                           <span class="score"> <%= @ask.points %> points </span>
@@ -45,13 +53,13 @@
                     </tr>
                     <tr style="height:2px"></tr>
                     <tr>
-                        <td></td>
+                        
                         <td colspan="2"></td>
                         <td> <%= @ask.text %> </td>
                     </tr>
                     <tr style="height:10px"></tr>
                     <tr>
-                        <td></td>
+                        
                         <td colspan="2"></td>
                         <td>
                             <%= form_with model: @comment do |form| %>
@@ -75,9 +83,11 @@
                         
                         </td>
                         <br>
-                        <br>
+                        
                         
                         <table border="0" class="comment-tree">
+                            <br>
+                            <br>
                             <tbody>
                                 <% identificador=@ask.id %>
                                 <% Comment.where(new_id: identificador).order('points DESC').all.each do |comment| %>
@@ -107,7 +117,7 @@
 
                                                             </span>
                                                         </div>
-                                                        <br>
+                                                        
                                                         <div class="comment">
                                                             <span class="comtext c00">
                                                                 <%= comment.text %>
