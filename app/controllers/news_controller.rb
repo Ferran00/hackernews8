@@ -7,15 +7,21 @@ class NewsController < ApplicationController
   def item
     @ask = New.find(params[:id])
     @comments = Comment.where("new_id == @ask.id").all#.count
+    if params[:error].nil?
+      @textError = 0
+    else
+      @textError = params[:error]
+    end
   end
   
   def createComment
     if !params[:text].blank?
       @comment = Comment.new(text: params[:text], points: 0, user_id: 1, new_id: params[:new_id]) #tenim hardcodejat usuari 1, ojo amb tenir un usuari
       @comment.save
-      #else redirigir a pagina d'error
+      redirect_to controller: 'news', action: 'item', id: params[:new_id]
+    else
+      redirect_to controller: "news", action: "item", id: params[:new_id], error: 1
     end
-    redirect_to controller: 'news', action: 'item', id: params[:new_id]
   end
   
   def vote

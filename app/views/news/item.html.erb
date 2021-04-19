@@ -1,7 +1,15 @@
 <center>
     <tr id="pagespace" style="height=10px"> </tr>
+    <% if @textError == "1" %>
+        <tr id="pagespace" style="height=10px"> </tr>
+    <% end %>
     <tr>
         <td>
+            
+          <% if @textError == "1" %>
+            Please try again.
+          <% end %>
+            
             <table class="fatittem" border="0">
                 <tbody>
                     <tr class="athing">
@@ -124,7 +132,7 @@
                                                                     <p>
                                                                         <font size="1">
                                                                             <u>
-                                                                                <%= link_to "reply", reply_path(@reply, :id => comment.id) %>
+                                                                                <%= link_to "reply", reply_path(@reply, :id => comment.id, :error => 0) %>
                                                                             </u>
                                                                         </font>
                                                                     </p>
