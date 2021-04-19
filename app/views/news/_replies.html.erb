@@ -1,0 +1,62 @@
+<% Comment.where(comment_id: idParentComment2).order('points DESC').all.each do |reply1| %>
+<tr class="athing comtr">
+    <td>
+        <table border="0">
+            <tbody>
+                <tr>
+                  
+                  <% gif_width = 40*depth %>
+                  <td class= "ind">
+                    <img src="https://news.ycombinator.com/s.gif" height="1" width= <%= gif_width%> >
+                  </td>
+                    
+                    <td valign="top" class="votelinks">
+                        <center>
+                            <div class="votearrow" title="upvote"> ▲ </div>
+                        </center>
+                    </td>
+                    <td class="default">
+                        <div style="margin-top:2px, margin-bottom:-10px;">
+                            <span class="comhead">
+                                <%= User.find(reply1.user_id).username %>
+                                
+                                    <%  quant=(Time.now-reply1.created_at).round %>
+                                    <% if quant < 60 %>
+                                        <span class="age"> <%= quant %> seconds ago </span>
+                                     <% elsif quant < 3600 then  quant=(quant/60).round %>
+                                        <span class="age"> <%= quant %> minutes ago </span>
+                                     <% elsif quant < 86400 then  quant=(quant/3600).round%>
+                                        <span class="age"> <%= quant %> hours ago </span>
+                                     <% else quant=(quant/86400).round %>
+                                        <span class="age"> <%= quant %> days ago </span>
+                                     <% end %>
+                                     
+
+                            </span>
+                        </div>
+                        
+                        <div class="comment">
+                            <span class="comtext c00">
+                                <%= reply1.text %>
+                                <div class="reply">
+                                    <p>
+                                        <font size="1">
+                                            <u>
+                                                <%= link_to "reply", reply_path(@reply, :id => reply1.id) %>
+                                            </u>
+                                        </font>
+                                    </p>
+                                </div>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                
+            </tbody>
+        </table>
+    </td>
+</tr>
+
+  <%= render partial: "replies", locals: {idParentComment2: reply1.id, depth: depth + 1} %>
+    
+<% end %>

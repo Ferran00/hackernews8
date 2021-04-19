@@ -143,9 +143,7 @@
                                         </table>
                                     </td>
                                 </tr>
-                                <!-- Ferran afegint replies -->
-                                    <% idParentComment=comment.id %>
-                                    <% mostrarReplies(idParentComment) %>
+                                    <%= render partial: "replies", locals: {idParentComment2: comment.id, depth: 1} %>
                                     
                                 <% end %>
                             </tbody>
