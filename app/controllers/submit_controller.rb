@@ -17,12 +17,15 @@ class SubmitController < ApplicationController
         
         if !params[:url].blank? && !params[:text].blank? #si té url AND text
           @new = New.new(title: params[:title], url: params[:url], text: "", isurl: isurl, points: params[:points])
-          #i ara falta posar el text com a primer comentari.
+          @new.save
+          
+          #i ara posem el text com a primer comentari.
+          @firstComment = Comment.new(text: params[:text], points: 0, user_id: 1, comment_id: nil, new_id: @new.id)   #hardcoded user_id = 1!!
+          @firstComment.save
         else
           @new = New.new(title: params[:title], url: params[:url], text: params[:text], isurl: isurl, points: params[:points])
+          @new.save
         end
-        
-        @new.save
         
         redirect_to newest_path
         
