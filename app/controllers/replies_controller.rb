@@ -5,7 +5,10 @@ class RepliesController < ApplicationController
   
   def createReply
     if !params[:text].blank?
-      @comment = Comment.new(text: params[:text], points: 0, user_id: 1, comment_id: params[:comment_id]) #tenim hardcodejat usuari 1, ojo amb tenir un usuari
+      
+      thread_id = getThreadId(Comment.find(params[:comment_id]))
+      
+      @comment = Comment.new(text: params[:text], points: 0, user_id: 1, comment_id: params[:comment_id], new_id: thread_id) #tenim hardcodejat usuari 1, ojo amb tenir un usuari
       @comment.save
       #else redirigir a pagina d'error
     end
@@ -21,6 +24,7 @@ class RepliesController < ApplicationController
   
   helper_method :getThreadTitle
   
+  #thread vol dir el "new" en el que es troben els comentaris
   def getThreadId(currentComment)
     current_new_id = currentComment.new_id
     while current_new_id.nil?

@@ -38,14 +38,9 @@
                           <% end %>
                              | hide | past | un‑favorite  |  
                      
-                         <%# count = 0 %>
-                         <%# @comments.each do |comment| %>
-                         <%# count = count + 1 %>
-                         <%# end %>
                      
-                         <%#= count %>
-                     
-                          69 comments
+                        <%= getNCommentsString(@ask.id) %>
+                        
                        
                         </td>
                         
@@ -90,7 +85,7 @@
                             <br>
                             <tbody>
                                 <% identificador=@ask.id %>
-                                <% Comment.where(new_id: identificador).order('points DESC').all.each do |comment| %>
+                                <% Comment.where(new_id: identificador, comment_id: nil).order('points DESC').all.each do |comment| %>
                                 <tr class="athing comtr">
                                     <td>
                                         <table border="0">

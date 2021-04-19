@@ -48,4 +48,22 @@ class NewsController < ApplicationController
     redirect_to :item
   end
   
+  def getNComments(newID)
+    return Comment.where(new_id: newID).all.size
+  end
+  
+  def getNCommentsIncludingReplies(newID)
+    
+  end
+  
+  def getNCommentsString(newID)
+    n_comments = getNComments(newID)
+    if n_comments == 0
+      return "discuss"
+    else
+      return n_comments.to_s + " comments"
+    end
+  end
+  helper_method :getNCommentsString
+  
 end

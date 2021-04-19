@@ -51,7 +51,9 @@
                   
                    | 
                   
-                  <%= link_to "discuss", :controller => :news, :action => :item, :id => new.id %>
+                  <% n_comments_string = getNCommentsString(new) %>
+                  
+                  <%= link_to n_comments_string, :controller => :news, :action => :item, :id => new.id %>
                   
                 </td>
               </tr>
