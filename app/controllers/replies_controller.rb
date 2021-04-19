@@ -14,4 +14,22 @@ class RepliesController < ApplicationController
     
     redirect_to controller: 'news', action: 'item', id: new_id2               
   end
+  
+  def getThreadTitle(currentComment)
+    return New.find(getThreadId(currentComment)).title
+  end
+  
+  helper_method :getThreadTitle
+  
+  def getThreadId(currentComment)
+    current_new_id = currentComment.new_id
+    while current_new_id.nil?
+      currentComment = Comment.find(currentComment.comment_id)
+      current_new_id = currentComment.new_id
+    end 
+    return current_new_id
+  end
+  
+  helper_method :getThreadId
+  
 end

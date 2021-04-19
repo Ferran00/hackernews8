@@ -37,14 +37,11 @@
                             </span>
                             <span class ="storyon">
                                | on: 
-                               <a href="item?id=">
-                                <% parentTitle = ""%>
-                                <% if !@parent.new_id.nil? %>  <!-- aquest if no es definitiu -->
-                                  <% parentTitle = New.find(@parent.new_id).title %>
-                                <% end %>
-                                <%= parentTitle %>
-                                  
-                               </a>
+                               
+                               <% threadId = getThreadId(@parent) %>
+                               
+                                <%= link_to getThreadTitle(@parent), :controller => :news, :action => :item, :id => threadId %>
+                                
                             </span>
                           </div>
                           <br>
