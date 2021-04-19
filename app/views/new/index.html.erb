@@ -25,7 +25,7 @@
                 <% if new.isurl==1 %>
                   <a href="<%= new.url %>" > <%= new.title %> </a>
                 <% else %>
-                  Ask HN: <%= link_to  new.title, :controller => :news, :action => :item, id: new.id %>
+                  <%= link_to "Ask HN:"+new.title, :controller => :news, :action => :item, id: new.id %>
                 <% end %>
                 </td>
               </tr>
@@ -45,11 +45,17 @@
                   <% else quant=(quant/86400).round %>
                     <span class="age"> <%= quant %> days ago </span>
                   <% end %>
-                  if (votado por el user) | unvote
-                  | 0 comments
+                  <% if (false) #sera if votado por el user. %>
+                    | unvote
+                  <% end %>
+                  
+                   | 
+                  
+                  <%= link_to "discuss", :controller => :news, :action => :item, :id => new.id %>
                   
                 </td>
-              </tr> 
+              </tr>
+              <tr class="spacer" style="height:5px"></tr>
             <% end %>
             </tbody>
 

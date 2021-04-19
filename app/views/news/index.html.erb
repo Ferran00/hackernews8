@@ -34,11 +34,22 @@
                 <% else quant=(quant/86400).round %>
                   <span class="age"> <%= quant %> days ago </span>
                 <% end %>
-                | hide  |  0 comments
+                
+                <% if (false) #sera if votado por el user. %>
+                    | unvote
+                <% end %>
+                
+                | hide  | 
+                
+                <% n_comments = Comment.where(new_id: new.id).all.size %>
+                <% n_comments_string = n_comments.to_s  %>
+                
+                <%= link_to n_comments_string+" comments", :controller => :news, :action => :item, :id => new.id %> 
                 
               </td>
             </tr> 
           <%# end %>
+          <tr class="spacer" style="height:5px"></tr>
         <% end %>
         </tbody>
 
