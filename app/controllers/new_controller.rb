@@ -8,18 +8,19 @@ class NewController < ApplicationController
   end
   
   def vote
-    #comprobar sesion
-    if !current_user.nil?
-      Likenew.new(user_id: params[:userid], new_id: params[:newid])
-      redirect_to :new
-    end
+    #Likenew.new(user_id: params[:userid], new_id: params[:newid])
+    @publi = New.find(params[:id])
+    @publi.points +=1
+    @publi.save
+    redirect_to :newest
   end    
   
   def unvote
-    if !current_user.nil?
-      Likenew.where(:user_id => params[:userid]).where(:new_id => params[:newid]).delete
-      redirect_to :new
-    end
+    # Likenew.where(:user_id => params[:userid]).where(:new_id => params[:newid]).delete
+    @publi = New.find(params[:id])
+    @publi.points -=1
+    @publi.save
+    redirect_to :newest
   end
   
   def getNComments(newID)

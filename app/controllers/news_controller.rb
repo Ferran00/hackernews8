@@ -26,31 +26,49 @@ class NewsController < ApplicationController
   
   def vote
     Likenew.new(user_id: params[:userid], new_id: params[:newid])
+    publi = New.where(new_id: params[:newid])
+    point = publi.points
+    publi.update_attribute :points, publi+1
     redirect_to :news
   end    
   
   def unvote
     Likenew.where(:user_id => params[:userid]).where(:new_id => params[:newid]).delete
+    publi = New.where(new_id: params[:newid])
+    point = publi.points
+    publi.update_attribute :points, publi-1
     redirect_to :news
   end
   
   def vote_item
     Likenew.new(user_id: params[:userid], new_id: params[:newid])
+    publi = New.where(new_id: params[:newid])
+    point = publi.points
+    publi.update_attribute :points, publi+1
     redirect_to :item
   end    
   
   def unvote_item
     Likenew.where(:user_id => params[:userid]).where(:new_id => params[:newid]).delete
+    publi = New.where(new_id: params[:newid])
+    point = publi.points
+    publi.update_attribute :points, publi-1
     redirect_to :item
   end
   
   def vote_comment
     Likecomment.new(user_id: params[:userid], comment_id: params[:commentid])
+    com = Comment.where(comment_id: params[:commentid])
+    point = com.points
+    com.update_attribute :points, com+1
     redirect_to :item
   end    
   
   def unvote_comment
     Likecomment.where(:user_id => params[:userid]).where(:comment_id => params[:commentid]).delete
+    com = Comment.where(comment_id: params[:commentid])
+    point = com.points
+    com.update_attribute :points, com-1
     redirect_to :item
   end
   
