@@ -2,7 +2,7 @@ class NewController < ApplicationController
   def index
     @new = New.order('created_at DESC').all
     if !current_user.nil?
-      @userliked = Likenew.where(user_id: session.user_id).all
+      @userliked = Likenew.where(user_id: session[:user_id]).all
     end
     @paginanewest = true
   end

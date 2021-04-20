@@ -5,9 +5,8 @@ class SessionsController < ApplicationController
             user_info = request.env["omniauth.auth"]
             user = User.from_omniauth(user_info)
             
-            session[:user_id] = user_info["uid"]
-            # @current_@user = User.find(user_info["uid"])
-            @current_user = @user_id
+            
+            # @current_user = session[:user_id]
             
             # log_in(user)
             # Access_token is used to authenticate request made from the rails application to the google server
@@ -16,7 +15,11 @@ class SessionsController < ApplicationController
             # Note: Refresh_token is only sent once during the first request
             refresh_token = user_info.credentials.refresh_token
             user.google_refresh_token = refresh_token if refresh_token.present?
+            user.id = user_info.uid
             user.save
+            
+            session[:user_id] = user_info["uid"]
+            @current_user = User.find(user_info["uid"])
         # end
         redirect_to root_path
     end
