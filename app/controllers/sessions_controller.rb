@@ -6,8 +6,8 @@ class SessionsController < ApplicationController
             user = User.from_omniauth(user_info)
             
             session[:user_id] = user_info["uid"]
-            @current_@user = User.find(user_info["uid"])
-            # @current_user = @user_id
+            # @current_@user = User.find(user_info["uid"])
+            @current_user = @user_id
             
             # log_in(user)
             # Access_token is used to authenticate request made from the rails application to the google server
