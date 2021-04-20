@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   get "/reply", to: "replies#index"
   
   
+  
   post "/reply", to: "replies#createReply"
   
   end
