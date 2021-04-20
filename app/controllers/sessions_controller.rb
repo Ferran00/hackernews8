@@ -1,5 +1,5 @@
 def googleAuth
-    if !@current_user.nil?
+    if @current_user.nil?
         # Get access tokens from the google server
         access_token = request.env["omniauth.auth"]
         user = User.from_omniauth(access_token)
