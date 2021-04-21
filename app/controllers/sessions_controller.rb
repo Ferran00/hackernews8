@@ -20,4 +20,11 @@ class SessionsController < ApplicationController
 
         redirect_to root_path
     end
+    
+    def logout
+        session[:user_id] = nil
+        @current_user = nil
+        
+        redirect_to root_path
+    end
 end

@@ -22,5 +22,5 @@ Rails.application.routes.draw do
   
   
   post "/reply", to: "replies#createReply"
-  
+  get "/auth/logout", to: "sessions#logout"
   end

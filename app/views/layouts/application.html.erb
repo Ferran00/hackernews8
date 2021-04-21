@@ -31,8 +31,6 @@
                     <b class="hnname">
                      <%= link_to "Hacker News", news_path(@news) %>
                     </b>
-                      <a href="">welcome</a>
-                      |
                     <% if @paginanewest %>
                       <span class="topsel">
                         <%= link_to "newest", newest_path(@newest)%>
@@ -58,7 +56,14 @@
             </td>
             <td style="align:right; padding-right:4px">
               <span class="pagetop">
+                  <% if current_user.nil? %>
                    <a href="/auth/google_oauth2">Sign in with Google</a>
+                  <% else %>
+                    <% usuari= User.find(current_user.id) %>
+                    <%= usuari.username %> (<%= usuari.karma %>)
+                    |
+                    <%= link_to "logout", :controller => :sessions, :action => :logout %>
+                  <% end %>
               </span>
             </td>
           </tr>
