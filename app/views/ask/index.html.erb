@@ -3,8 +3,8 @@
     <td>
       <table border="0" cellpadding="0" cellspacing="0" class="itemlist">
         <tbody>
-          AIXO ÉS ASK
         <% @ask.each_with_index do |new,i| %>
+        <%# S'HAURIA DE RENAME AQUESTA VARIABLE "new" PER "ask"%>
           <tr class="athing" >
             <td align="right" valign="top" class="title">
               <span class="rank"> <%= i + 1 %>.  </span>
@@ -32,7 +32,7 @@
                   <% end %>
             </td>
             <td class="title">
-              <a href="<%= new.url %>" class="storylink" rel="nofollow"> <%= new.title %> </a>
+              <%= link_to "Ask HN:"+new.title, :controller => :news, :action => :item, id: new.id %>
             </td>
           </tr>
           <tr >

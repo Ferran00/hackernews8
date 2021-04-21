@@ -25,4 +25,5 @@ Rails.application.routes.draw do
   get "/auth/logout", to: "sessions#logout"
   
   get "/ask", to: "news#ask"
+  get "/threads", to: "replies#threads"
   end
