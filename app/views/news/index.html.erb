@@ -10,9 +10,25 @@
             </td>
 
             <td valign="top" class="votelinks">
-              <center>
-                ▲
-              </center>
+             <% if !current_user.nil? %>
+                    <% if new.user_id!=current_user.id %>
+                      <% trobat=0 %>
+                      <% @userliked.each do |userliked| %>
+                        <% if new.id == userliked.new_id %>
+                          <% trobat = 1 %>
+                        <% end %>
+                      <% end %>
+                      <% if trobat==0 %>
+                        <%= link_to '▲','/news/vote/'+new.id.to_s, method: :post%>
+                      <% else %>
+                        <%= link_to '▼','/news/unvote/'+new.id.to_s, method: :delete%>
+                      <% end %>
+                    <% else %>
+                       <a href="" style="color:orange;" > * </a>
+                    <% end %>
+                  <% else %>
+                    <%= link_to '▲','/auth/google_oauth2', method: :get%>
+                  <% end %>
             </td>
             <td class="title">
               <a href="<%= new.url %>" class="storylink" rel="nofollow"> <%= new.title %> </a>
@@ -22,7 +38,8 @@
               <td colspan="2"></td>
               <td class="subtext">
                 <span class="score"> <%= new.points %> points </span>
-                 by 
+                 by
+                 
                 <% if !new.user_id.nil? %>
                   <%= User.find(new.user_id).username %>
                 <% else %> 

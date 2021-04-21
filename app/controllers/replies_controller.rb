@@ -9,7 +9,7 @@ class RepliesController < ApplicationController
       
       thread_id = getThreadId(Comment.find(params[:comment_id]))
       
-      @comment = Comment.new(text: params[:text], points: 0, user_id: 1, comment_id: params[:comment_id], new_id: thread_id) #tenim hardcodejat usuari 1, ojo amb tenir un usuari
+      @comment = Comment.new(text: params[:text], points: 0, user_id: current_user.id, comment_id: params[:comment_id], new_id: thread_id) #tenim hardcodejat usuari 1, ojo amb tenir un usuari
       @comment.save
       
       new_id2 = Comment.find(params[:comment_id]).new_id

@@ -1,7 +1,35 @@
 class NewsController < ApplicationController
   def index
     @new = New.where(:isurl => 1).order('points DESC').all
+     @userliked = nil
+    if !current_user.nil?
+      @userliked = Likenew.where(user_id: session[:user_id]).all
+    end
     @paginanewest = false
+   
+  end
+  
+  def vote
+    @like = Likenew.new(user_id: current_user.id, new_id: params[:newid])
+    @like.save
+    @publi = New.find(params[:newid])
+    @publi.points +=1
+    @publi.save
+    @user = User.find(@publi.user_id)
+    @user.karma +=1
+    @user.save
+    redirect_to :news
+  end    
+  
+  def unvote
+    Likenew.find_by(user_id: current_user.id, new_id: params[:newid]).destroy
+    @publi = New.find(params[:newid])
+    @publi.points -=1
+    @publi.save
+    @user = User.find(@publi.user_id)
+    @user.karma -=1
+    @user.save
+    redirect_to :news
   end
   
   def item
@@ -16,7 +44,7 @@ class NewsController < ApplicationController
   
   def createComment
     if !params[:text].blank?
-      @comment = Comment.new(text: params[:text], points: 0, user_id: 1, new_id: params[:new_id]) #tenim hardcodejat usuari 1, ojo amb tenir un usuari
+      @comment = Comment.new(text: params[:text], points: 0, user_id: current_user.id, new_id: params[:new_id]) #tenim hardcodejat usuari 1, ojo amb tenir un usuari
       @comment.save
       redirect_to controller: 'news', action: 'item', id: params[:new_id]
     else
@@ -24,21 +52,6 @@ class NewsController < ApplicationController
     end
   end
   
-  def vote
-    Likenew.new(user_id: params[:userid], new_id: params[:newid])
-    publi = New.where(new_id: params[:newid])
-    point = publi.points
-    publi.update_attribute :points, publi+1
-    redirect_to :news
-  end    
-  
-  def unvote
-    Likenew.where(:user_id => params[:userid]).where(:new_id => params[:newid]).delete
-    publi = New.where(new_id: params[:newid])
-    point = publi.points
-    publi.update_attribute :points, publi-1
-    redirect_to :news
-  end
   
   def vote_item
     Likenew.new(user_id: params[:userid], new_id: params[:newid])
