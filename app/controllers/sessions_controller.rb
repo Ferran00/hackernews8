@@ -18,7 +18,7 @@ class SessionsController < ApplicationController
             user.google_refresh_token = refresh_token if refresh_token.present?
             puts user_info.uid
             user.id = temp_id
-            puts user.id
+            puts temp_id
             user.save
 
             session[:user_id] = temp_id

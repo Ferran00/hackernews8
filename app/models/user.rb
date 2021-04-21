@@ -8,7 +8,8 @@ class User < ApplicationRecord
       puts user.id
       user.username = auth.info.name
       user.email = auth.info.email
-      user.save
+      puts user.username
+      puts user.email
     end
   end
 end
