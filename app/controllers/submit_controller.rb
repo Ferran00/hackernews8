@@ -1,12 +1,15 @@
 class SubmitController < ApplicationController
   def index
+    if current_user.nil?
+      redirect_to '/auth/google_oauth2'
+    end
     
   end
 
 
       
   def create
-    if !current_user.nil?
+    
       if !params[:title].blank? && (!params[:url].blank? || !params[:text].blank?)
         
         @existingNewsWithSameURL = New.where(url: params[:url]).first
@@ -17,14 +20,14 @@ class SubmitController < ApplicationController
           end
           
           if !params[:url].blank? && !params[:text].blank? #si té url AND text
-            @new = New.new(title: params[:title], url: params[:url], text: "", isurl: isurl, points: params[:points])
+            @new = New.new(title: params[:title], url: params[:url], text: "", isurl: isurl, points: params[:points], user_id: current_user.id)
             @new.save
             
             #i ara posem el text com a primer comentari.
-            @firstComment = Comment.new(text: params[:text], points: 0, user_id: 1, comment_id: nil, new_id: @new.id)   #hardcoded user_id = 1!! 
+            @firstComment = Comment.new(text: params[:text], points: 0,user_id: current_user.id, comment_id: nil, new_id: @new.id)  
             @firstComment.save
           else
-            @new = New.new(title: params[:title], url: params[:url], text: params[:text], isurl: isurl, points: params[:points])
+            @new = New.new(title: params[:title], url: params[:url], text: params[:text], isurl: isurl, points: params[:points],user_id: current_user.id)
             @new.save
           end
           
@@ -37,10 +40,7 @@ class SubmitController < ApplicationController
       else
         redirect_to :submit
       end
-      
-    else
-      redirect_to '/auth/google_oauth2'
-    end
+       
   end
   
 end

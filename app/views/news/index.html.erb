@@ -23,7 +23,7 @@
               <td class="subtext">
                 <span class="score"> <%= new.points %> points </span>
                  by 
-                None
+                <%#= User.find(new.user_id).username %>
                 <%  quant=(Time.now-new.created_at).round %>
                 <% if quant < 60 %>
                   <span class="age"> <%= quant %> seconds ago </span>
