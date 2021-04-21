@@ -2,8 +2,8 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   root "news#index"
   post "/submit", to: "submit#create"
-  post "/new/vote:id", to: "new#vote"
-  delete "/new/unvote:id", to: "new#unvote"
+  post "/new/vote/:newid", to: "new#vote"
+  delete "/new/unvote/:newid", to: "new#unvote"
   post "/news/vote", to: "news#vote"
   delete "news/unvote", to: "news#unvote"
   post "/news/votecomment", to: "news#votecomment"

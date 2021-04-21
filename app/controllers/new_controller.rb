@@ -1,25 +1,33 @@
 class NewController < ApplicationController
   def index
     @new = New.order('created_at DESC').all
-    if !@current_user.nil?
+    @userliked = nil
+    if !current_user.nil?
       @userliked = Likenew.where(user_id: session[:user_id]).all
     end
     @paginanewest = true
   end
   
   def vote
-    #Likenew.new(user_id: params[:userid], new_id: params[:newid])
-    @publi = New.find(params[:id])
+    @like = Likenew.new(user_id: current_user.id, new_id: params[:newid])
+    @like.save
+    @publi = New.find(params[:newid])
     @publi.points +=1
     @publi.save
+    @user = User.find(@publi.user_id)
+    @user.karma +=1
+    @user.save
     redirect_to :newest
   end    
   
   def unvote
-    # Likenew.where(:user_id => params[:userid]).where(:new_id => params[:newid]).delete
-    @publi = New.find(params[:id])
+    Likenew.find_by(user_id: current_user.id, new_id: params[:newid]).destroy
+    @publi = New.find(params[:newid])
     @publi.points -=1
     @publi.save
+    @user = User.find(@publi.user_id)
+    @user.karma -=1
+    @user.save
     redirect_to :newest
   end
   

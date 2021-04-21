@@ -5,6 +5,7 @@ class User < ApplicationRecord
       user.id = auth.uid
       user.username = auth.info.name
       user.email = auth.info.email
+      user.karma = 0
     end
   end
 end

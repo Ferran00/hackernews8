@@ -9,17 +9,23 @@
                   <span class="rank"> <%= i+1 %>.  </span>
                 </td>
                 <td valign="top" class="votelinks">
-                  <%# if !@current_user.nil? %>
-                    <%# @userliked.each do |userliked| %>
-                      <%# if new.id == userliked.new_id %>
-                        <%# = link_to '▲','/new/vote'+new.id.to_s, method: :post%>
-                      <%# else %>
-                  <%= link_to '▼','/new/unvote'+new.id.to_s, method: :delete%>
-                      <%# end %>
-                    <%# end %>
-                  <%# else %>
-                    <%# = link_to '▲','/auth/google_oauth2', method: :get%>
-                  <%# end %>
+                  <% if !current_user.nil? %>
+                  <% trobat=0 %>
+                    <% @userliked.each do |userliked| %>
+                      <% if new.id == userliked.new_id %>
+                        <% trobat = 1 %>
+                      <% end %>
+                    <% end %>
+                    <% if trobat==0 %>
+                      <%= link_to '▲','/new/vote/'+new.id.to_s, method: :post%>
+                    <% else %>
+                      <%= link_to '▼','/new/unvote/'+new.id.to_s, method: :delete%>
+                    <% end %>
+                    
+                  <% else %>
+                    <%= link_to '▲','/auth/google_oauth2', method: :get%>
+                  <% end %>
+              
                 </td>
                 <td class="title">
                 <% if new.isurl==1 %>
@@ -34,7 +40,11 @@
                 <td class="subtext">
                   <span class="score"> <%= new.points %> points </span>
                    by 
-                  <%#= User.find(new.user_id).username %>
+                  <% if !new.user_id.nil? %>
+                    <%= User.find(new.user_id).username %>
+                  <% else %> 
+                    None
+                  <% end %>
                   <%  quant=(Time.now-new.created_at).round %>
                   <% if quant < 60 %>
                     <span class="age"> <%= quant %> seconds ago </span>
