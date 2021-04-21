@@ -3,9 +3,11 @@ class User < ApplicationRecord
     # Creates a new user only if it doesn't exist
     where(email: auth.info.email).first_or_initialize do |user|
                   puts "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-      self.id = auth.uid
-      self.name = auth.info.name
-      self.email = auth.info.email
+      user.id = auth.uid
+      puts auth.uid
+      puts user.id
+      user.name = auth.info.name
+      user.email = auth.info.email
     end
   end
 end
