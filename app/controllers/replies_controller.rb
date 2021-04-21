@@ -2,6 +2,10 @@ class RepliesController < ApplicationController
   def index
     @parent = Comment.find(params[:id])
     @textError = params[:error]
+    @userlikedCom = nil
+    if !current_user.nil?
+      @userlikedCom = Likecomment.where(user_id: session[:user_id]).all
+    end
   end
   
   def createReply
