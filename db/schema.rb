@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_20_141529) do
+ActiveRecord::Schema.define(version: 2021_04_10_150434) do
 
-  create_table "Users", id: { limit: 16 }, force: :cascade do |t|
+  create_table "Users", id: { limit: 8 }, force: :cascade do |t|
     t.string "username"
     t.string "email"
     t.integer "karma"
