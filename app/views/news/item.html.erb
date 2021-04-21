@@ -18,9 +18,25 @@
                             <span class="rank"></span>
                         </td>
                         <td valign="top" class="votelinks">
-                            <center>
-                                <div class="votearrow" title="upvote"> ▲ </div>
-                            </center>
+                            <% if !current_user.nil? %>
+                              <% if @ask.user_id!=current_user.id %>
+                                <% trobat=0 %>
+                                <% @userlikedCom.each do |userliked| %>
+                                  <% if @ask.id == userliked.comment_id %>
+                                     <% trobat = 1 %>
+                                  <% end %>
+                                <% end %>
+                                <% if trobat==0 %>
+                                  <%= link_to '▲','/news/votecomment/'+@ask.id.to_s, method: :post %>
+                                <% else %>
+                                  <%= link_to '▼','/news/unvotecomment/'+@ask.id.to_s, method: :delete %>
+                                <% end %>
+                              <% else %>
+                                <a href="" style="color:orange;" > * </a>
+                              <% end %>
+                            <% else %>
+                              <%= link_to '▲','/auth/google_oauth2', method: :get%>
+                            <% end %>
                         </td>
                         
                         <td class="title">
@@ -33,7 +49,11 @@
                       <td class="subtext">
                           <span class="score"> <%= @ask.points %> points </span>
                            by 
-                          None
+                            <% if !@ask.user_id.nil? %>
+                              <%= User.find(@ask.user_id).username %>
+                            <% else %> 
+                              None
+                             <% end %>
                           <%  quant=(Time.now-@ask.created_at).round %>
                           <% if quant < 60 %>
                             <span class="age"> <%= quant %> seconds ago </span>
