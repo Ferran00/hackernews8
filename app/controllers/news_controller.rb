@@ -40,6 +40,10 @@ class NewsController < ApplicationController
     else
       @textError = params[:error]
     end
+    @userlikedCom = nil
+    if !current_user.nil?
+      @userlikedCom = Likecomment.where(user_id: session[:user_id]).all
+    end
   end
   
   def createComment
@@ -51,38 +55,24 @@ class NewsController < ApplicationController
       redirect_to controller: "news", action: "item", id: params[:new_id], error: 1
     end
   end
+
   
-  
-  def vote_item
-    Likenew.new(user_id: params[:userid], new_id: params[:newid])
-    publi = New.where(new_id: params[:newid])
-    point = publi.points
-    publi.update_attribute :points, publi+1
-    redirect_to :item
+  def votecomment
+    @likeComment = Likecomment.new(user_id: current_user.id, comment_id: params[:comment_id])
+    @likeComment.save
+    @com = Comment.find(params[:comment_id])
+    @com.points += 1
+    @com.save
+    redirect_to controller: 'news', action: 'item', id: @com.new_id
+    
   end    
   
-  def unvote_item
-    Likenew.where(:user_id => params[:userid]).where(:new_id => params[:newid]).delete
-    publi = New.where(new_id: params[:newid])
-    point = publi.points
-    publi.update_attribute :points, publi-1
-    redirect_to :item
-  end
-  
-  def vote_comment
-    Likecomment.new(user_id: params[:userid], comment_id: params[:commentid])
-    com = Comment.where(comment_id: params[:commentid])
-    point = com.points
-    com.update_attribute :points, com+1
-    redirect_to :item
-  end    
-  
-  def unvote_comment
-    Likecomment.where(:user_id => params[:userid]).where(:comment_id => params[:commentid]).delete
-    com = Comment.where(comment_id: params[:commentid])
-    point = com.points
-    com.update_attribute :points, com-1
-    redirect_to :item
+  def unvotecomment
+    Likecomment.find_by(user_id: current_user.id, comment_id: params[:comment_id]).destroy
+    @com = Comment.find(params[:comment_id])
+    @com.points -= 1
+    @com.save
+    redirect_to controller: 'news', action: 'item', id: @com.new_id
   end
   
   def getNComments(newID)
