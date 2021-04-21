@@ -23,4 +23,7 @@ Rails.application.routes.draw do
   
   post "/reply", to: "replies#createReply"
   get "/auth/logout", to: "sessions#logout"
+  
+  get "/ask", to: "news#ask"
+  get "/threads", to: "replies#threads"
   end

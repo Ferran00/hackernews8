@@ -43,4 +43,12 @@ class RepliesController < ApplicationController
   
   helper_method :getThreadId
   
+  def threads
+    @userComment = Comment.where(:user_id => current_user.id).order('points DESC').all #es fa aixi el current_user?
+    
+    @paginanewest = false
+    
+    render "threads/index"
+  end
+  
 end

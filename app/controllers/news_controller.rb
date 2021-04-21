@@ -93,4 +93,15 @@ class NewsController < ApplicationController
   end
   helper_method :getNCommentsString
   
+  def ask
+    @ask = New.where(:isurl => 0).order('points DESC').all
+     @userliked = nil
+    if !current_user.nil?
+      @userliked = Likenew.where(user_id: session[:user_id]).all
+    end
+    @paginanewest = false
+    
+    render "ask/index"
+  end
+  
 end

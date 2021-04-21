@@ -39,13 +39,13 @@
                       <%= link_to "new", newest_path(@newest)%>
                     <% end %>
                       |
-                      <a href="">threads</a>
+                      <%= link_to "threads", :controller => :replies, :action => :threads %>
                       |
                       <a href="">past</a>
                       |
                       <a href="">comments</a>
                       |
-                      <a href="">ask</a>
+                      <%= link_to "ask", :controller => :news, :action => :ask %>
                       |
                       <a href="">show</a>
                       |
