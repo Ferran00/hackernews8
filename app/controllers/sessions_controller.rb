@@ -16,8 +16,9 @@ class SessionsController < ApplicationController
             # Note: Refresh_token is only sent once during the first request
             refresh_token = user_info.credentials.refresh_token
             user.google_refresh_token = refresh_token if refresh_token.present?
-            
+            puts user_info.uid
             user.id = temp_id
+            puts user.id
             user.save
 
             session[:user_id] = temp_id

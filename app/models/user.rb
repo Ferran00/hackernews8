@@ -6,8 +6,9 @@ class User < ApplicationRecord
       user.id = auth.uid
       puts auth.uid
       puts user.id
-      user.name = auth.info.name
+      user.username = auth.info.name
       user.email = auth.info.email
+      user.save
     end
   end
 end
