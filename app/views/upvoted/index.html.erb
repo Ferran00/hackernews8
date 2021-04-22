@@ -1,0 +1,74 @@
+<!-- es fa servir tant per als comments del logged user com per als d'algun altre user en concret -->
+<center>
+  <tr>
+    <td>
+      <table border="0" cellpadding="0" cellspacing="0" class="itemlist">
+        <tbody>
+        <% @likedComment.each_with_index do |com,i| %>
+          <% comment = Comment.find(com.comment_id) %>
+          <tr class="athing" >
+            <td>
+              <table border="0">
+                  <tbody>
+                      <tr>
+                          <td class="ind"></td>
+                          <td class="default">
+                              <div style="margin-top:2px, margin-bottom:-10px;">
+                                  <span class="comhead">
+                                     <% if current_user.nil? %>
+                                        <% ctu = 0 %>
+                                      <% else %> 
+                                        <% ctu = current_user.id %>
+                                      <% end %>
+                                      <% usuari_new = User.find(comment.user_id) %>
+                                      <% if usuari_new.id == ctu %>
+                                        <%= link_to usuari_new.username, '/profile' %>
+                                      <% else %>
+                                        <%= link_to usuari_new.username, '/profile/'+usuari_new.id.to_s %>
+                                      <% end %>
+                                      
+                                          <%  quant=(Time.now-comment.created_at).round %>
+                                          <% if quant < 60 %>
+                                              <span class="age"> <%= quant %> seconds ago </span>
+                                           <% elsif quant < 3600 then  quant=(quant/60).round %>
+                                              <span class="age"> <%= quant %> minutes ago </span>
+                                           <% elsif quant < 86400 then  quant=(quant/3600).round%>
+                                              <span class="age"> <%= quant %> hours ago </span>
+                                           <% else quant=(quant/86400).round %>
+                                              <span class="age"> <%= quant %> days ago </span>
+                                           <% end %>
+                                  </span>
+                                  <span class="comhead">
+                                    on
+                                    <% threadId = getThreadId(comment) %>
+                                    <%= link_to getThreadTitle(comment), :controller => :news, :action => :item, :id => threadId %>
+                                  </span>
+                              </div>
+                              
+                              <div class="comment">
+                                  <span class="comtext c00">
+                                      <%= comment.text %>
+                                     
+                                  </span>
+                              </div>
+                          </td>
+                      </tr>
+                      
+                  </tbody>
+              </table>
+          </td>
+
+          </tr>
+          <tr>
+            </tr> 
+          <%# end %>
+          <tr class="spacer" style="height:5px"></tr>
+        <% end %>
+        </tbody>
+
+      </table>
+
+    </td>
+
+  </tr>
+</center>

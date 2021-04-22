@@ -29,5 +29,7 @@ Rails.application.routes.draw do
   
   get "/profile", to: "profile#profile"
   get "/profile/:userid", to: "otherprofile#index"
-  post "/update", to: "profile#profile"
+  post "/profile", to: "profile#update"
+  
+  get "/upvoted", to: "upvoted#index"
   end
