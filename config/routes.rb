@@ -19,11 +19,13 @@ Rails.application.routes.draw do
   
   get "/reply", to: "replies#index"
   
-  
-  
   post "/reply", to: "replies#createReply"
   get "/auth/logout", to: "sessions#logout"
   
   get "/ask", to: "news#ask"
   get "/threads", to: "replies#threads"
+  
+  get "/profile", to: "profile#profile"
+  get "/profile/:userid", to: "profile#otherprofile"
+  post "/profile", to: "profile#profile"
   end
