@@ -8,7 +8,11 @@
             <tr><td valign="top">created:</td><td><%= @created %></td></tr>
             <tr><td valign="top">karma:</td><td><%= @karma %></td></tr>
             <tr><td valign="top">about:</td><td><%= @about %></td></tr>
-            <tr><td></td><td><a href=""><u>submissions</u></a></td></tr><tr><td></td>
+            <tr><td></td>
+            <td> 
+              <u> <%= link_to "submissions", '/news/othernews?userid='+@id.to_s %></u>
+            </td></tr>
+            <tr><td></td>
             <td>
               <u> <%= link_to "comments", '/threads?userid='+@id.to_s %> </u>
             </td></tr>

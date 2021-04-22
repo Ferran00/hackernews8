@@ -26,10 +26,11 @@ Rails.application.routes.draw do
   get "/threads", to: "replies#threads"
   get "threads/otherusercomments", to: "replies#threads"
  # get "threads/:userid", to: "replies#otherUserComments"
-  
+  get "/news/othernews", to: "othernews#index"
   get "/profile", to: "profile#profile"
   get "/profile/:userid", to: "otherprofile#index"
   post "/profile", to: "profile#update"
   
   get "/upvoted", to: "upvoted#index"
+  get "/upvotedsub", to: "upvotedsub#index"
   end
