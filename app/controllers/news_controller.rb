@@ -18,7 +18,7 @@ class NewsController < ApplicationController
     @user = User.find(@publi.user_id)
     @user.karma +=1
     @user.save
-    redirect_to :news
+    redirect_to :controller => :news, :action => :index
   end    
   
   def unvote
@@ -29,7 +29,7 @@ class NewsController < ApplicationController
     @user = User.find(@publi.user_id)
     @user.karma -=1
     @user.save
-    redirect_to :news
+    redirect_to :controller => :news, :action => :index
   end
   
   def item
