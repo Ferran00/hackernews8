@@ -43,16 +43,18 @@ class RepliesController < ApplicationController
   
   helper_method :getThreadId
   
-  
   #per a anar a comments d'un altre user fer:
   #<%= link_to "comments", '/threads?userid='+ID_DEL_USER.to_s %>
   # i entrarà al if
   def threads
+    @paginanewest = false
     
     @userlikedCom = nil
     if !current_user.nil? #si estic logged
       @userlikedCom = Likecomment.where(user_id: session[:user_id]).all
     end
+    
+    @commentsAlreadyPainted = Set[]
     
     if !params[:userid].nil?
       @otherUserComments = Comment.where(:user_id => params[:userid]).order('points DESC').all
@@ -61,8 +63,7 @@ class RepliesController < ApplicationController
       @userComment = Comment.where(:user_id => current_user.id).order('points DESC').all #es fa aixi el current_user? sembla que sí.
       render "threads/index"
     end
-    
-    @paginanewest = false
+  
   end
 
 #trash
