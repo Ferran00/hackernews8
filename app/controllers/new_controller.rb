@@ -45,4 +45,4 @@
   end
   helper_method :getNCommentsString
   
-end
+  end
