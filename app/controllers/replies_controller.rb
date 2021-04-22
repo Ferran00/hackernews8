@@ -43,12 +43,23 @@ class RepliesController < ApplicationController
   
   helper_method :getThreadId
   
+  
+  #per a anar a comments d'un altre user fer:
+  #<%= link_to "comments", '/threads?userid='+ID_DEL_USER.to_s %>
+  # i entrarà al if
   def threads
-    @userComment = Comment.where(:user_id => current_user.id).order('points DESC').all #es fa aixi el current_user?
+    if current_user.nil?
+      @userComment = Comment.where(:user_id => params[:userid]).order('points DESC').all
+    else
+      @userComment = Comment.where(:user_id => current_user.id).order('points DESC').all #es fa aixi el current_user? sembla que sí.
+    end
     
     @paginanewest = false
     
     render "threads/index"
   end
+
+#trash
+  # <%= link_to "nom del botó", :controller => :replies, :action => :otherUserComments, userid: ID_DEL_USER %>
   
 end
