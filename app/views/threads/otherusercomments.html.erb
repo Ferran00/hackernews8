@@ -10,6 +10,27 @@
                   <tbody>
                       <tr>
                           <td class="ind"></td>
+                                                    <td valign="top" class="votelinks">
+                                                      <% if !current_user.nil? %>
+                                                        <% if comment.user_id!=current_user.id %>
+                                                          <% trobat=0 %>
+                                                          <% @userlikedCom.each do |userliked| %>
+                                                            <% if comment.id == userliked.comment_id %>
+                                                              <% trobat = 1 %>
+                                                            <% end %>
+                                                          <% end %>
+                                                          <% if trobat==0 %>
+                                                            <%= link_to '▲','/news/votecomment/'+comment.id.to_s, method: :post %>
+                                                          <% else %>
+                                                            <%= link_to '▼','/news/unvotecomment/'+comment.id.to_s, method: :delete %>
+                                                          <% end %>
+                                                        <% else %>
+                                                           <a href="" style="color:orange;" > * </a>
+                                                        <% end %>
+                                                      <% else %>
+                                                        <%= link_to '▲','/auth/google_oauth2', method: :get%>
+                                                      <% end %>
+                                                    </td>
                           <td class="default">
                             <div style="margin-top:2px, margin-bottom:-10px;">
                               <span class="comhead">

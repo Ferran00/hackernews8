@@ -48,6 +48,12 @@ class RepliesController < ApplicationController
   #<%= link_to "comments", '/threads?userid='+ID_DEL_USER.to_s %>
   # i entrarà al if
   def threads
+    
+    @userlikedCom = nil
+    if !current_user.nil? #si estic logged
+      @userlikedCom = Likecomment.where(user_id: session[:user_id]).all
+    end
+    
     if !params[:userid].nil?
       @otherUserComments = Comment.where(:user_id => params[:userid]).order('points DESC').all
       render "threads/otherusercomments"
@@ -57,7 +63,6 @@ class RepliesController < ApplicationController
     end
     
     @paginanewest = false
-    
   end
 
 #trash
