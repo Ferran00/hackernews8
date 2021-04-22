@@ -48,15 +48,16 @@ class RepliesController < ApplicationController
   #<%= link_to "comments", '/threads?userid='+ID_DEL_USER.to_s %>
   # i entrarà al if
   def threads
-    if current_user.nil?
-      @userComment = Comment.where(:user_id => params[:userid]).order('points DESC').all
+    if !params[:userid].nil?
+      @otherUserComments = Comment.where(:user_id => params[:userid]).order('points DESC').all
+      render "threads/otherusercomments"
     else
       @userComment = Comment.where(:user_id => current_user.id).order('points DESC').all #es fa aixi el current_user? sembla que sí.
+      render "threads/index"
     end
     
     @paginanewest = false
     
-    render "threads/index"
   end
 
 #trash

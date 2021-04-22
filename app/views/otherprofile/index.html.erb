@@ -9,7 +9,10 @@
             <tr><td valign="top">karma:</td><td><%= @karma %></td></tr>
             <tr><td valign="top">about:</td><td><%= @about %></td></tr>
             <tr><td></td><td><a href=""><u>submissions</u></a></td></tr><tr><td></td>
-            <td><a href= "/threads?userid="+@id.to_s><u>comments</u></a></td></tr>
+            <td>
+              <a href= '/threads?userid='+@id.to_s><u>comments</u></a>
+              <u> <%= link_to "comments", '/threads?userid='+@id.to_s %> </u>
+            </td></tr>
         </tbody>
         </table>
         <br><br>

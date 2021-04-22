@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   
   get "/ask", to: "news#ask"
   get "/threads", to: "replies#threads"
+  get "threads/otherusercomments", to: "replies#threads"
  # get "threads/:userid", to: "replies#otherUserComments"
   
   get "/profile", to: "profile#profile"
