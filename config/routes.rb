@@ -27,7 +27,6 @@ Rails.application.routes.draw do
  # get "threads/:userid", to: "replies#otherUserComments"
   
   get "/profile", to: "profile#profile"
-  get "/profile/:userid", to: "profile#otherprofile"
-  post "/profile", to: "profile#profile"
-  
+  get "/profile/:userid", to: "otherprofile#index"
+  post "/update", to: "profile#profile"
   end
