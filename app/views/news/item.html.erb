@@ -21,15 +21,15 @@
                             <% if !current_user.nil? %>
                               <% if @ask.user_id!=current_user.id %>
                                 <% trobat=0 %>
-                                <% @userlikedCom.each do |userliked| %>
-                                  <% if @ask.id == userliked.comment_id %>
+                                <% @userlikedNews.each do |userliked| %>
+                                  <% if @ask.id == userliked.new_id %>
                                      <% trobat = 1 %>
                                   <% end %>
                                 <% end %>
                                 <% if trobat==0 %>
-                                  <%= link_to '▲','/news/votecomment/'+@ask.id.to_s, method: :post %>
+                                  <%= link_to '▲','/news/vote/'+@ask.id.to_s, method: :post %>
                                 <% else %>
-                                  <%= link_to '▼','/news/unvotecomment/'+@ask.id.to_s, method: :delete %>
+                                  <%= link_to '▼','/news/unvote/'+@ask.id.to_s, method: :delete %>
                                 <% end %>
                               <% else %>
                                 <a href="" style="color:orange;" > * </a>

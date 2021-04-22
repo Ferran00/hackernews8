@@ -41,7 +41,9 @@ class NewsController < ApplicationController
       @textError = params[:error]
     end
     @userlikedCom = nil
+    @userlikedNews = nil
     if !current_user.nil?
+      @userlikedNews = Likenew.where(user_id: session[:user_id]).all
       @userlikedCom = Likecomment.where(user_id: session[:user_id]).all
     end
   end
