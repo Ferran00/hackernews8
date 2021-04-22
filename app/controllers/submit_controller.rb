@@ -6,8 +6,6 @@ class SubmitController < ApplicationController
     
   end
 
-
-      
   def create
     
       if !params[:title].blank? && (!params[:url].blank? || !params[:text].blank?)
