@@ -50,7 +50,17 @@
                           <span class="score"> <%= @ask.points %> points </span>
                            by 
                             <% if !@ask.user_id.nil? %>
-                              <%= User.find(@ask.user_id).username %>
+                              <% if current_user.nil? %>
+                                <% ctu = 0 %>
+                              <% else %> 
+                                <% ctu = current_user.id %>
+                              <% end %>
+                              <% usuari_new = User.find(@ask.user_id) %>
+                              <% if usuari_new.id == ctu %>
+                                <%= link_to usuari_new.username, '/profile' %>
+                              <% else %>
+                                <%= link_to usuari_new.username, '/profile/'+usuari_new.id.to_s %>
+                              <% end %>
                             <% else %> 
                               None
                              <% end %>
@@ -144,7 +154,17 @@
                                                     <td class="default">
                                                         <div style="margin-top:2px, margin-bottom:-10px;">
                                                             <span class="comhead">
-                                                                <%= User.find(comment.user_id).username %>
+                                                                  <% if current_user.nil? %>
+                                                                    <% ctu = 0 %>
+                                                                  <% else %> 
+                                                                    <% ctu = current_user.id %>
+                                                                  <% end %>
+                                                                  <% usuari_new = User.find(comment.user_id) %>
+                                                                  <% if usuari_new.id == ctu %>
+                                                                    <%= link_to usuari_new.username, '/profile' %>
+                                                                  <% else %>
+                                                                    <%= link_to usuari_new.username, '/profile/'+usuari_new.id.to_s %>
+                                                                  <% end %>
                                                                 
                                                                     <%  quant=(Time.now-comment.created_at).round %>
                                                                     <% if quant < 60 %>

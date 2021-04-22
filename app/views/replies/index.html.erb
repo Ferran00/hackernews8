@@ -38,8 +38,17 @@
                         <td class = "default">
                           <div style="margin-top:2px; margin-bottom:-10px;">
                             <span class= "comhead">
-                              
-                              <%= User.find(@parent.user_id).username %>
+                            <% if current_user.nil? %>
+                              <% ctu = 0 %>
+                            <% else %> 
+                              <% ctu = current_user.id %>
+                            <% end %>
+                            <% usuari_new = User.find(@parent.user_id) %>
+                            <% if usuari_new.id == ctu %>
+                              <%= link_to usuari_new.username, '/profile' %>
+                            <% else %>
+                              <%= link_to usuari_new.username, '/profile/'+usuari_new.id.to_s %>
+                            <% end %>
                             </span>
                             <span class="age">
                               <%  quant=(Time.now-@parent.created_at).round %>

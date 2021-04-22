@@ -42,7 +42,17 @@
                  by
                  
                 <% if !new.user_id.nil? %>
-                  <%= User.find(new.user_id).username %>
+                    <% if current_user.nil? %>
+                      <% ctu = 0 %>
+                    <% else %> 
+                      <% ctu = current_user.id %>
+                    <% end %>
+                    <% usuari_new = User.find(new.user_id) %>
+                    <% if usuari_new.id == ctu %>
+                      <%= link_to usuari_new.username, '/profile' %>
+                    <% else %>
+                      <%= link_to usuari_new.username, '/profile/'+usuari_new.id.to_s %>
+                    <% end %>
                 <% else %> 
                   None
                 <% end %>

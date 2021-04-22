@@ -61,7 +61,7 @@
                    <a href="/auth/google_oauth2">Sign in with Google</a>
                   <% else %>
                     <% usuari= User.find(current_user.id) %>
-                    <%= usuari.username %> (<%= usuari.karma %>)
+                    <%= link_to usuari.username, '/profile' %> (<%= usuari.karma %>)
                     |
                     <%= link_to "logout", :controller => :sessions, :action => :logout %>
                   <% end %>
