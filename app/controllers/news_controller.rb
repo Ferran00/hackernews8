@@ -18,7 +18,7 @@ class NewsController < ApplicationController
     @user = User.find(@publi.user_id)
     @user.karma +=1
     @user.save
-    redirect_to :news
+    redirect_to :controller => :news, :action => :index
   end    
   
   def unvote
@@ -29,7 +29,7 @@ class NewsController < ApplicationController
     @user = User.find(@publi.user_id)
     @user.karma -=1
     @user.save
-    redirect_to :news
+    redirect_to :controller => :news, :action => :index
   end
   
   def item
@@ -41,7 +41,9 @@ class NewsController < ApplicationController
       @textError = params[:error]
     end
     @userlikedCom = nil
+    @userlikedNews = nil
     if !current_user.nil?
+      @userlikedNews = Likenew.where(user_id: session[:user_id]).all
       @userlikedCom = Likecomment.where(user_id: session[:user_id]).all
     end
   end
