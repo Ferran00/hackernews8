@@ -29,21 +29,21 @@
             <td style="line-height:12pt; height:10px;">
                   <span class="pagetop">
                     <b class="hnname">
-                     <%= link_to "Hacker News", news_path(@news) %>
+                     <%= link_to "Hacker News", :controller => :news, :action => :index %>
                     </b>
                     <% if @paginanewest %>
                       <span class="topsel">
-                        <%= link_to "new", newest_path(@newest)%>
+                        <%= link_to "new", :controller => :new, :action => :index%>
                       </span>
                     <% else %>
-                      <%= link_to "new", newest_path(@newest)%>
+                      <%= link_to "new", :controller => :new, :action => :index%>
                     <% end %>
                       |
                       <%= link_to "threads", :controller => :replies, :action => :threads %>
                       |
                       <%= link_to "ask", :controller => :news, :action => :ask %>
                       |
-                    <%= link_to "submit", submit_path(@submit) %>
+                    <%= link_to "submit", :controller => :submit, :action => :index %>
                   </span>
             </td>
             <td style="align:right; padding-right:4px">
