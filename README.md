@@ -6,4 +6,4 @@
 - Víctor Fernández
 - Joel Tejada
 
-App: https://still-shelf-94526.herokuapp.com/
+App: https://mighty-island-52257.herokuapp.com/
