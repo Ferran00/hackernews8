@@ -32,9 +32,9 @@ class Api::NewsController < ApplicationController
             @user = User.find(@publi.user_id)
             @user.karma +=1
             @user.save
-            format.json { render json:{status:"OK", code:200, message: "New with ID '" + params[:id] + "' upvoted successfully"}, status: :ok}  #el status: :ok nidea de si funcionarà
+            format.json { render json:{status:"OK", code:200, message: "New with ID '" + params[:newid] + "' upvoted successfully"}, status: :ok}  #el status: :ok nidea de si funcionarà
           else   #si ja esta liked
-            format.json { render json:{status:"error", code:409, message: "New with ID '" + params[:id] + "' has already been upvoted by user"}, status: :conflict} #el status: :conflict nidea de si funcionarà
+            format.json { render json:{status:"error", code:409, message: "New with ID '" + params[:newid] + "' has already been upvoted by user"}, status: :conflict} #el status: :conflict nidea de si funcionarà
           end
         else#token invalido
         format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
