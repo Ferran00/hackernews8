@@ -39,7 +39,10 @@ Rails.application.routes.draw do
     get "/news/:id", to: "api/news#getInfoNew"
     
     #upvote new 
-    put "/news/upvote?newid=", to: "api/news#upvote"
+    put "/news/upvote", to: "api/news#upvote"
+    
+    #users
+    #get "/user"
   
   end
   end

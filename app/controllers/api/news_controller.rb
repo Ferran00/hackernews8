@@ -16,11 +16,13 @@ class Api::NewsController < ApplicationController
     
     respond_to do |format|
       
-      if request.headers['X-API-KEY'].present?  #if hay token
-        @token = request.headers['X-API-KEY'].to_s
-        @user  = User.find_by_apiKey(@token)
+      #if request.headers['X-API-KEY'].present?  #if hay token
+      #  @token = request.headers['X-API-KEY'].to_s
+      #  @user  = User.find_by_apiKey(@token)
+      
+        @user  = User.find(846455) #stub
         
-        if #es valido
+        if true #es valido (stub)
           if (!Likenew.exists?(user_id: @user.id, new_id: params[:newid]))  #si no està liked
             @like = Likenew.new(user_id: @user.id, new_id: params[:newid])
             @like.save
@@ -37,9 +39,9 @@ class Api::NewsController < ApplicationController
         else#token invalido
         format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
         end
-      else  #no hay token
-        format.json { render json:{status:"error", code:401, message: "No API key provided"}, status: :unauthorized}
-      end
+      #else  #no hay token
+      #  format.json { render json:{status:"error", code:401, message: "No API key provided"}, status: :unauthorized}
+      #end
     end
   end
   
