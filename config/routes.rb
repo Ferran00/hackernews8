@@ -37,6 +37,9 @@ Rails.application.routes.draw do
   scope "/api",defaults: {format: 'json'} do
     #news
     get "/news/:id", to: "api/news#getInfoNew"
+    
+    #upvote new 
+    put "/news/upvote?newid=", to: "api/news#upvote"
   
   end
   end
