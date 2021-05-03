@@ -19,6 +19,8 @@ class Api::NewsController < ApplicationController
     respond_to do |format|
     puts "*****************arribo a respond"
       
+      # potser rails ja fa una comprovació automàtica de token. no ens funciona per ara el upvote.
+      
       #if request.headers['X-API-KEY'].present?  #if hay token
       #  @token = request.headers['X-API-KEY'].to_s
       #  @user  = User.find_by_apiKey(@token)
