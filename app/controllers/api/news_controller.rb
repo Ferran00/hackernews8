@@ -20,7 +20,7 @@ class Api::NewsController < ApplicationController
       #  @token = request.headers['X-API-KEY'].to_s
       #  @user  = User.find_by_apiKey(@token)
       
-        @user  = User.find(846455) #stub
+        @user = User.find(846455) #stub
         
         if true #es valido (stub)
           if (!Likenew.exists?(user_id: @user.id, new_id: params[:newid]))  #si no està liked
@@ -29,9 +29,9 @@ class Api::NewsController < ApplicationController
             @publi = New.find(params[:newid])
             @publi.points +=1
             @publi.save
-            @user = User.find(@publi.user_id)
-            @user.karma +=1
-            @user.save
+            @author = User.find(@publi.user_id)
+            @author.karma +=1
+            @author.save
             format.json { render json:{status:"OK", code:200, message: "New with ID '" + params[:newid] + "' upvoted successfully"}, status: :ok}  #el status: :ok nidea de si funcionarà
           else   #si ja esta liked
             format.json { render json:{status:"error", code:409, message: "New with ID '" + params[:newid] + "' has already been upvoted by user"}, status: :conflict} #el status: :conflict nidea de si funcionarà
