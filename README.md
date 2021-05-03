@@ -6,4 +6,4 @@
 - Víctor Fernández
 - Joel Tejada
 
-App: https://mighty-island-52257.herokuapp.com/
+App: https://arcane-journey-15614.herokuapp.com/
