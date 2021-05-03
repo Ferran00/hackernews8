@@ -10,18 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_10_150434) do
-
-  create_table "Users", id: { limit: 8 }, force: :cascade do |t|
-    t.string "username"
-    t.string "email"
-    t.integer "karma"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.string "google_token"
-    t.string "google_refresh_token"
-    t.text "about"
-  end
+ActiveRecord::Schema.define(version: 2021_05_03_175448) do
 
   create_table "comments", force: :cascade do |t|
     t.text "text"
@@ -64,6 +53,18 @@ ActiveRecord::Schema.define(version: 2021_04_10_150434) do
     t.datetime "updated_at", precision: 6, null: false
     t.integer "user_id"
     t.index ["user_id"], name: "index_news_on_user_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "username"
+    t.string "email"
+    t.integer "karma"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "google_token"
+    t.string "google_refresh_token"
+    t.text "about"
+    t.string "api_key"
   end
 
   add_foreign_key "comments", "comments"
