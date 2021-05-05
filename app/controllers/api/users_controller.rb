@@ -17,14 +17,14 @@ class Api::UsersController < ApplicationController
   end
   
   def updateProfile
+    protect_from_forgery :except => :create
     respond_to do |format|
-      @paramet = request.body.read()
       if request.headers['token'].present?
         @key = request.headers['token'].to_s
         if User.exists?(api_key: @key)
           @user  = User.find_by(api_key: @key)
-          @user.about = @paramet.about
-          @user.email = @paramet.email
+          @user.about = params[:about]
+          @user.email = params[:email]
           @user.save
           
           format.json { render json: {id: @user.id, username: @user.email, karma: @user.karma, about: @user.about, created_at: @user.created_at, api_key: @user.api_key}, status: :ok}
