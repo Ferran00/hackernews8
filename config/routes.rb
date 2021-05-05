@@ -44,6 +44,6 @@ Rails.application.routes.draw do
     #users
     get "/users/profile", to: "api/users#getProfile"
     put "/users/profile", to: "api/users#updateProfile"
-    
+    get "/users/profile/:email", to: "api/users#getOtherProfile"
   end
 end
