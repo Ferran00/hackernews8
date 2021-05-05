@@ -18,13 +18,15 @@ class Api::UsersController < ApplicationController
   
   def updateProfile
     respond_to do |format|
+      @paramet = request.body.read()
       if request.headers['token'].present?
         @key = request.headers['token'].to_s
         if User.exists?(api_key: @key)
           @user  = User.find_by(api_key: @key)
-          @user.about = params[:about]
-          @user.email = params[:email]
+          @user.about = @paramet.about
+          @user.email = @paramet.email
           @user.save
+          
           format.json { render json: {id: @user.id, username: @user.email, karma: @user.karma, about: @user.about, created_at: @user.created_at, api_key: @user.api_key}, status: :ok}
         else
           format.json { render json: {error: "error", code: 404, message: "The user with token: " + @key + " doesn't exist"}, status: :not_found}
