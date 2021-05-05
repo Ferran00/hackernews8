@@ -45,6 +45,5 @@ Rails.application.routes.draw do
     get "/users/profile", to: "api/users#getProfile"
     put "/users/profile", to: "api/users#updateProfile"
     
-   
   end
 end
