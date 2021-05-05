@@ -42,7 +42,9 @@ Rails.application.routes.draw do
     post "/news/upvote", to: "api/news#upvote"
     
     #users
-    #get "/user"
+    get "/users/profile", to: "api/users#getProfile"
+    put "/users/profile", to: "api/users#updateProfile"
+    
   
   end
   end
