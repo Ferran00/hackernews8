@@ -1,12 +1,11 @@
 class Api::UsersController < ApplicationController
-  protect_from_forgery with: :null_session
   def getProfile
     respond_to do |format|  
       if request.headers['token'].present?
         @key = request.headers['token'].to_s
         if User.exists?(api_key: @key)
           @user  = User.find_by(api_key: @key)
-          format.json { render json: { id: @user.id, username: @user.email, karma: @user.karma, about: @user.about, created_at: @user.created_at, api_key: @user.api_key}}
+          format.json { render json: {username: @user.email, created_at: @user.created_at, karma: @user.karma, about: @user.about, email: @user.email, api_key: @user.api_key, id: @user.id}}
         else
           format.json { render json: {error: "error", code: 404, message: "The user with token: " + @key + " doesn't exist"}, status: :not_found}
         end
@@ -32,7 +31,7 @@ class Api::UsersController < ApplicationController
           end
           @user.save
           
-          format.json { render json: {id: @user.id, username: @user.email, karma: @user.karma, about: @user.about, created_at: @user.created_at, api_key: @user.api_key}, status: :ok}
+          format.json { render json: {username: @user.username, created_at: @user.created_at, karma: @user.karma, about: @user.about, email: @user.email, api_key: @user.api_key, id: @user.id}, status: :ok}
         else
           format.json { render json: {error: "error", code: 404, message: "The user with token: " + @key + " doesn't exist"}, status: :not_found}
         end
