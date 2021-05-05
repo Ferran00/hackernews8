@@ -1,5 +1,5 @@
 class Api::UsersController < ApplicationController
-  
+  protect_from_forgery with: :null_session
   def getProfile
     respond_to do |format|  
       if request.headers['token'].present?
