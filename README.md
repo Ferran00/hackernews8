@@ -1,3 +1,5 @@
+Aplicació web - clon de Hacker News (https://news.ycombinator.com/) per a ASW - FIB - UPC
+
 # Equip de desenvolupament
 
 - Arnau Garcia 
