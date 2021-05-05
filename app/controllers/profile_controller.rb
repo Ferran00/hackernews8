@@ -5,7 +5,7 @@ class ProfileController < ApplicationController
     @user = User.find(current_user.id)
     @user.about = params[:about]
     @user.email = params[:email] 
-    @current_user = @user
     @user.save
+    @current_user = @user
   end
 end
