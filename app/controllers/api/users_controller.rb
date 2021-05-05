@@ -1,4 +1,5 @@
 class Api::UsersController < ApplicationController
+  
   puts "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 1"
   def getProfile
     respond_to do |format|  
