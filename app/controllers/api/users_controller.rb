@@ -17,7 +17,6 @@ class Api::UsersController < ApplicationController
   end
   
   def updateProfile
-    protect_from_forgery :except => :create
     respond_to do |format|
       if request.headers['token'].present?
         @key = request.headers['token'].to_s
