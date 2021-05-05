@@ -1,5 +1,4 @@
 class Api::UsersController < ApplicationController
-  protect_from_forgery with: :null_session
   def getProfile
     respond_to do |format|  
       if request.headers['token'].present?
@@ -22,8 +21,14 @@ class Api::UsersController < ApplicationController
         @key = request.headers['token'].to_s
         if User.exists?(api_key: @key)
           @user  = User.find_by(api_key: @key)
-          @user.about = params[:about]
-          @user.email = params[:email]
+          @about = params[:about]
+          @email = params[:email]
+          if(@about != null)
+            @user.about = @about
+          end
+          if(@email != null)
+            @user.email = @email
+          end
           @user.save
           
           format.json { render json: {id: @user.id, username: @user.email, karma: @user.karma, about: @user.about, created_at: @user.created_at, api_key: @user.api_key}, status: :ok}
