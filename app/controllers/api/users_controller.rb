@@ -24,10 +24,10 @@ class Api::UsersController < ApplicationController
           @user  = User.find_by(api_key: @key)
           @about = params[:about]
           @email = params[:email]
-          if(@about != null)
+          if(!@about.nil?)
             @user.about = @about
           end
-          if(@email != null)
+          if(!@email.nil?)
             @user.email = @email
           end
           @user.save
