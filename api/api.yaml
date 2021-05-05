@@ -1,0 +1,24 @@
+#molt inacabada
+openapi: 3.0.1
+info:
+  version: 1.0.0
+  title: Hacker News
+  description: "This is the Open API documentation for our Hacker News clone's REST API, deployed at <https://arcane-journey-15614.herokuapp.com/>. <br><br><br>brrrr<br><br>All operations are executable. Only one operation requires authentication: `deleteTweet`. In this case, you must **Authorize** your request by providing the api_key vaule you got when you created the tweet."
+servers:
+  - url: 'https://arcane-journey-15614.herokuapp.com/'
+paths:
+  /news:
+    get:
+      tags:
+      - news
+      summary: Returns a specific new
+      operationId: 
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: 
+                items:
+                  #inacabat
