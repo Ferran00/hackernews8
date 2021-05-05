@@ -4,14 +4,14 @@ class Api::RepliesController < ApplicationController
       if request.headers['token'].present?
         @key = request.headers['token'].to_s
         if User.exists?(api_key: @key)
-          if !params[:text].blank?
+          if !params[:text].blank? && !params[:comment_id].blank?
             thread_id = getThreadId(Comment.find(params[:comment_id]))
             @user = User.find_by(api_key: @key)
             @comment = Comment.new(text: params[:text], points: 0, user_id: @user.id, comment_id: params[:comment_id], new_id: thread_id) 
             @comment.save
             format.json { render json: @comment, status: :ok}
           else
-            format.json { render json: {error: "error", code: 404, message: "The text provided is blank"}, status: :not_found}
+            format.json { render json: {error: "error", code: 404, message: "The text or the comment_id provided are blank"}, status: :not_found}
           end
         else
             format.json { render json: {error: "error", code: 404, message: "The user with token: " + @key + " doesn't exist"}, status: :not_found}
@@ -27,13 +27,13 @@ class Api::RepliesController < ApplicationController
       if request.headers['token'].present?
         @key = request.headers['token'].to_s
         if User.exists?(api_key: @key)
-          if !params[:text].blank?
+          if !params[:text].blank? && !params[:new_id].blank?
             @user = User.find_by(api_key: @key)
             @comment = Comment.new(text: params[:text], points: 0, user_id: @user.id, new_id: params[:new_id]) #tenim hardcodejat usuari 1, ojo amb tenir un usuari
             @comment.save
             format.json { render json: @comment, status: :ok}
           else
-            format.json { render json: {error: "error", code: 404, message: "The text provided is blank"}, status: :not_found}
+            format.json { render json: {error: "error", code: 404, message: "The text or the new_id provided are blank"}, status: :not_found}
           end
         else
             format.json { render json: {error: "error", code: 404, message: "The user with token: " + @key + " doesn't exist"}, status: :not_found}
