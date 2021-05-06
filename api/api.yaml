@@ -86,6 +86,26 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error401'
+          
+  
+  
+  /news/new:
+    get:
+      tags:
+      - news
+      summary: Returns a list of newest url news
+      description: Returns a list of newest url news
+      operationId: getNewNews
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/New'
+        
         
 components:
   schemas:    #per quan vols mostrar un schema

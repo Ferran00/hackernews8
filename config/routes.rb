@@ -35,11 +35,13 @@ Rails.application.routes.draw do
   get "/upvotedsub", to: "upvotedsub#index"
   
   scope "/api",defaults: {format: 'json'} do
-    #news
-    get "/news/:id", to: "api/news#getInfoNew"
-    get "/news" , to: "api/news#getNews"
+    #news 
     get "/news/new", to: "api/news#getNewNews"
     get "/news/create", to: "api/news#create"
+    get "/news/:id", to: "api/news#getInfoNew"
+    get "/news" , to: "api/news#getNews"
+   
+    
     #upvote new 
     post "/news/upvote", to: "api/news#upvote"
     
