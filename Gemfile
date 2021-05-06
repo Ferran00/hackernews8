@@ -63,3 +63,6 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'omniauth-google-oauth2'
 gem "figaro"
+
+#cors, per a la demo amb swagger:
+gem 'rack-cors', '>= 1.1.0'
