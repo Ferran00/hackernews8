@@ -3,22 +3,165 @@ openapi: 3.0.1
 info:
   version: 1.0.0
   title: Hacker News
-  description: "This is the Open API documentation for our Hacker News clone's REST API, deployed at <https://arcane-journey-15614.herokuapp.com/>. <br><br><br>brrrr<br><br>All operations are executable. Only one operation requires authentication: `deleteTweet`. In this case, you must **Authorize** your request by providing the api_key vaule you got when you created the tweet."
+  description: "This is the Open API documentation for our Hacker News clone's REST API, deployed at <https://arcane-journey-15614.herokuapp.com/>. <br><br><br>brrrr COMPLETAR!<br><br>All operations are executable. Only one operation requires authentication: `deleteTweet`. In this case, you must **Authorize** your request by providing the api_key vaule you got when you created the tweet."
 servers:
   - url: 'https://arcane-journey-15614.herokuapp.com/'
 paths:
-  /news:
+  /news/{id}:
     get:
       tags:
       - news
       summary: Returns a specific new
-      operationId: 
+      description: Returns a specific new, identified by id
+      operationId: getInfoNew
+      parameters:
+      - name: id
+        in: path
+        description: ID of the new to return
+        required: true  #not sure. potser tindrem un get /news per llistes? 
+        schema:
+          type: integer
+          format: int64 #nose
       responses:
         200:
           description: successful operation
           content:
             application/json:
               schema:
-                type: 
-                items:
-                  #inacabat
+                $ref: '#/components/schemas/New'
+        404:
+          description: 'Error: New not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+    
+  /news/upvote:
+    post:
+      tags:
+      - upvotes
+      summary: Upvote a specific new
+      description: Upvote a specific new, identified by the newid parameter
+      operationId: upvote
+      parameters:
+      - name: newid
+        in: query
+        description: ID of the new to upvote
+        required: true
+        schema:
+          type: integer
+          format: int64 #nose
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:     #not sure de si les propietats son aquestes
+                  status:
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                    example: 'New with ID 3 upvoted successfully'
+          
+        409:
+          description: 'conflict: New has already been upvoted by user'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error409'
+        401:
+          description: 'Unauthorized: Invalid API key'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        
+components:
+  schemas:    #per quan vols mostrar un schema
+    New:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 3
+        title:
+          type: string
+          example: 'Amazing new title'
+        url:
+          type: string
+          example: 'https://web.whatsapp.com/'
+        text:
+          type: string  #suposo q al json sera string. era de tipus text
+          example: 'this is a text. hey'
+        isurl:
+          type: integer
+          format: int64
+          example: 1
+        points:
+          type: integer
+          format: int64
+          example: 70
+        created_at:
+          type: string
+          format: date-time
+          example: '2021-05-05 15:47:32.238268000 +0000'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2021-05-05 15:47:32.238268000 +0000'
+        user_id:
+          type: integer
+          format: int64
+          example: 4
+          
+    ErrorResult:
+      type: object
+      properties:
+        status:
+          type: integer
+          enum: [400, 401, 403, 404, 409]
+        error: 
+          type: string
+          enum: ["Bad Request", "Unauthorized", "Forbidden", "Not Found", "Conflict"]
+        message: 
+          type: string
+          
+  examples:    #per quan vols mostrar un exemple
+    error400:
+      value:
+        status: 400
+        error: "Bad Request"
+        message: ""
+    error401:
+      value:
+        status: 401
+        error: "Unauthorized"
+        message: "You provided no api key (X-API-KEY Header)"
+    error403:
+      value:
+        status: 403
+        error: "Forbidden"
+        message: "Your api key (X-API-KEY Header) is not valid"
+    error404:
+      value:
+        status: 404
+        error: "Not Found"
+        message: "No New with that ID"
+    error409:
+      value:
+        status: 409
+        error: "Conflict"
+        message: "New with ID 43 has already been upvoted by user"
