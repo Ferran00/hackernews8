@@ -133,7 +133,7 @@ class Api::NewsController < ApplicationController
               @author.save
               format.json { render json:{status:"No content", code:204, message: "New with ID '" + params[:newid] + "' unvoted successfully"}, status: :no_content} #no retorna el status i el message perque "pel que es veu" 204 is not supposed to return a body
             else
-              format.json { render json:{status:"error", code:404, message: "New with ID '" + params[:newid] + "' has not been upvoted by user"}, status: :not_found}
+              format.json { render json:{status:"error", code:404, message: "User has not upvoted a new with ID '" + params[:newid] + "'"}, status: :not_found}
             end
           else  #token no valid
             format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}

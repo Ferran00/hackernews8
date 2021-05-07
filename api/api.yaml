@@ -4,7 +4,9 @@ info:
   title: Hacker News
   description: "This is the Open API documentation for our Hacker News clone's REST API, deployed at <https://arcane-journey-15614.herokuapp.com/>. <br><br><br>brrrr COMPLETAR!<br><br>All operations are executable. Only one operation requires authentication: `deleteTweet`. In this case, you must **Authorize** your request by providing the api_key vaule you got when you created the tweet."
 servers:
+  #heroku. comentar aquest i posar el vostre a la altra linea per a testejar a AWS
   - url: 'https://arcane-journey-15614.herokuapp.com/api/'
+  #- url: 'http://174.129.128.159:8080/api/'  #inserir aqui la IP del vostre Cloud9
 paths:
   /news/{id}:
     get:
@@ -78,7 +80,7 @@ paths:
                 errorExample:
                   $ref: '#/components/examples/error409'
         401:
-          description: 'Unauthorized: Invalid API key'
+          description: 'Unauthorized: Invalid API key or no API key provided'
           content:
             application/json:
               schema:
@@ -86,7 +88,60 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error401'
-          
+        400:
+          description: 'no newid specified (query)'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error400'
+         
+    delete:
+      tags:
+      - upvotes
+      summary: Unvote a specific new
+      description: Unvote a specific new (remove the vote). The new is identified by the newid parameter
+      operationId: unvote
+      parameters:
+      - name: newid
+        in: query
+        description: ID of the new to unvote
+        required: true
+        schema:
+          type: integer
+          format: int64 #nose
+      responses:
+        204:
+          description: success    #en principi no té body. esperant mail lidia
+        404:
+          description: error. User has not upvoted a new with the specified ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+        401:
+          description: 'Unauthorized: Invalid API key or no API key provided'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        400:
+          description: 'no newid specified (query)'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error400'
   
   
   /news/new:
@@ -163,17 +218,17 @@ components:
       value:
         status: 400
         error: "Bad Request"
-        message: ""
+        message: "no newid specified (query)"
     error401:
       value:
         status: 401
         error: "Unauthorized"
-        message: "You provided no api key (X-API-KEY Header)"
+        message: "Invalid API key"
     error403:
       value:
         status: 403
         error: "Forbidden"
-        message: "Your api key (X-API-KEY Header) is not valid"
+        message: "Privilege not granted"
     error404:
       value:
         status: 404
