@@ -3,11 +3,21 @@ class Api::NewsController < ApplicationController
   def getInfoNew
     
     respond_to do |format|
-      if New.exists?(params[:id])
-        @new = New.find(params[:id])
-        format.json { render json: @new, status: :ok}
-      else
-        format.json { render json:{status:"error", code:404, message: "New with ID '" + params[:id] + "' not found"}, status: :not_found}
+      if request.headers['token'].present?  #si hi ha token
+        @key = request.headers['token'].to_s
+        if User.exists?(api_key: @key)  #token valid
+          #cosa
+          if New.exists?(params[:id])
+            @new = New.find(params[:id])
+            format.json { render json: @new, status: :ok}
+          else
+            format.json { render json:{status:"error", code:404, message: "New with ID '" + params[:id] + "' not found"}, status: :not_found}
+          end
+        else  #token no valid
+          format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
+        end
+      else  #no han pasado token
+        format.json { render json:{status:"error", code:401, message: "no API key provided"}, status: :unauthorized}
       end
     end
   end
@@ -77,48 +87,76 @@ class Api::NewsController < ApplicationController
     end
   end
       
-    
-    
-  
+      
   def upvote
-    
-    puts "*****************arribo a metode upvote"
-    
     respond_to do |format|
-    puts "*****************arribo a respond"
       
-      # potser rails ja fa una comprovació automàtica de token. no ens funciona per ara el upvote.
+      if !params[:newid].nil? #si han passat el param
       
-      #if request.headers['X-API-KEY'].present?  #if hay token
-      #  @token = request.headers['X-API-KEY'].to_s
-      #  @user  = User.find_by_apiKey(@token)
-      
-      @user = User.find(846455) #stub
-      
-      if 1==1 #es valido (stub)
-        puts "*****************entro a if true"
-        if (!Likenew.exists?(user_id: @user.id, new_id: params[:newid]))  #si no està liked
-        puts "*****************entro a if not liked"
-          @like = Likenew.new(user_id: @user.id, new_id: params[:newid])
-          @like.save
-          @publi = New.find(params[:newid])
-          @publi.points +=1
-          @publi.save
-          @author = User.find(@publi.user_id)
-          @author.karma +=1
-          @author.save
-          format.json { render json:{status:"OK", code:200, message: "New with ID '" + params[:newid] + "' upvoted successfully"}, status: :ok}  #el status: :ok nidea de si funcionarà
-        else   #si ja esta liked
-          format.json { render json:{status:"error", code:409, message: "New with ID '" + params[:newid] + "' has already been upvoted by user"}, status: :conflict} #el status: :conflict nidea de si funcionarà
+        if request.headers['token'].present?  #si hi ha token
+          @key = request.headers['token'].to_s
+          if User.exists?(api_key: @key)  #token valid. identifica al user.
+            @user  = User.find_by(api_key: @key)
+            if (!Likenew.exists?(user_id: @user.id, new_id: params[:newid]))  #si no està liked
+              @like = Likenew.new(user_id: @user.id, new_id: params[:newid])
+              @like.save
+              @publi = New.find(params[:newid])
+              @publi.points +=1
+              @publi.save
+              @author = User.find(@publi.user_id)
+              @author.karma +=1
+              @author.save
+              format.json { render json:{status:"OK", code:200, message: "New with ID '" + params[:newid] + "' upvoted successfully"}, status: :ok}  #el status: :ok nidea de si funcionarà
+            else   #si ja esta liked
+              format.json { render json:{status:"error", code:409, message: "New with ID '" + params[:newid] + "' has already been upvoted by user"}, status: :conflict} #el status: :conflict nidea de si funcionarà
+            end
+          else  #token no valid
+            format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
+          end
+        else  #no han pasado token
+          format.json { render json:{status:"error", code:401, message: "no API key provided"}, status: :unauthorized}
         end
-      else#token invalido
-      format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
+        
+      else #no han passat el param newid
+        format.json { render json:{status:"error", code:400, message: "no newid specified (query)"}, status: :bad_request}
       end
-      
-      #else  #no hay token
-      #  format.json { render json:{status:"error", code:401, message: "No API key provided"}, status: :unauthorized}
-      #end
     end
+  end
+  
+  def unvote
+    respond_to do |format|
+      
+      if !params[:newid].nil? #si han passat el param
+      
+        if request.headers['token'].present?  #si hi ha token
+          @key = request.headers['token'].to_s
+          if User.exists?(api_key: @key)  #token valid. identifica al user.
+            @user  = User.find_by(api_key: @key)
+            
+            if (Likenew.exists?(user_id: @user.id, new_id: params[:newid]))  #si està liked
+              Likenew.find_by(user_id: @user.id, new_id: params[:newid]).destroy
+              @publi = New.find(params[:newid])
+              @publi.points -=1
+              @publi.save
+              @author = User.find(@publi.user_id)
+              @author.karma -=1
+              @author.save
+              format.json { render json:{status:"No content", code:204, message: "New with ID '" + params[:newid] + "' unvoted successfully"}, status: :no_content} #no retorna el status i el message perque "pel que es veu" 204 is not supposed to return a body
+            else
+              format.json { render json:{status:"error", code:404, message: "User has not upvoted a new with ID '" + params[:newid] + "'"}, status: :not_found}
+            end
+          else  #token no valid
+            format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
+          end
+        else  #no han pasado token
+          format.json { render json:{status:"error", code:401, message: "no API key provided"}, status: :unauthorized}
+        end
+        
+      else #no han passat el param newid
+        format.json { render json:{status:"error", code:400, message: "no newid specified (query)"}, status: :bad_request}
+      end
+    end
+    
   end
   
 end
