@@ -1,3 +1,4 @@
+
 openapi: 3.0.1
 info:
   version: 1.0.0
@@ -5,7 +6,7 @@ info:
   description: "This is the Open API documentation for our Hacker News clone's REST API, deployed at <https://arcane-journey-15614.herokuapp.com/>. <br><br><br>brrrr COMPLETAR!<br><br>All operations are executable. Only one operation requires authentication: `deleteTweet`. In this case, you must **Authorize** your request by providing the api_key vaule you got when you created the tweet."
 servers:
   #heroku. comentar aquest i posar el vostre a la altra linea per a testejar a AWS
-  - url: 'https://arcane-journey-15614.herokuapp.com/api/'
+  - url: 'http://3.86.16.176/api/'
   #- url: 'http://174.129.128.159:8080/api/'  #inserir aqui la IP del vostre Cloud9
 paths:
   /news/{id}:
@@ -188,7 +189,9 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/New'
-                    
+    
+  
+  
   /news/ask:
     get:
       tags:

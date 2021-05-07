@@ -53,5 +53,42 @@ class Api::RepliesController < ApplicationController
     return current_new_id
   end
   
+  def upvote
+    respond_to do |format|
+      
+      if !params[:comment_id].nil? #si han passat el param
+      
+        if request.headers['token'].present?  #si hi ha token
+          @key = request.headers['token'].to_s
+          if User.exists?(api_key: @key)  #token valid. identifica al user.
+            @user  = User.find_by(api_key: @key)
+            if (!Likecomment.exists?(user_id: @user.id, comment_id: params[:comment_id]))  #si no està liked
+              @like = Likecomment.new(user_id: current_user.id, comment_id: params[:comment_id])
+              @like.save
+              @com = New.find(params[:comment_id])
+              @com.points +=1
+              @com.save
+              @author = User.find(@com.user_id)
+              @author.karma +=1
+              @author.save
+              format.json { render json:{status:"OK", code:200, message: "Comment with ID '" + params[:comment_id] + "' upvoted successfully"}, status: :ok}  #el status: :ok nidea de si funcionarà
+            else   #si ja esta liked
+              format.json { render json:{status:"error", code:409, message: "Comment with ID '" + params[:comment_id] + "' has already been upvoted by user"}, status: :conflict} #el status: :conflict nidea de si funcionarà
+            end
+          else  #token no valid
+            format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
+          end
+        else  #no han pasado token
+          format.json { render json:{status:"error", code:401, message: "no API key provided"}, status: :unauthorized}
+        end
+        
+      else #no han passat el param newid
+        format.json { render json:{status:"error", code:400, message: "no comment_id specified (query)"}, status: :bad_request}
+      end
+    end
+  end
+  
+ 
+  
 end
 
