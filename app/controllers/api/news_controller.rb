@@ -3,11 +3,21 @@ class Api::NewsController < ApplicationController
   def getInfoNew
     
     respond_to do |format|
-      if New.exists?(params[:id])
-        @new = New.find(params[:id])
-        format.json { render json: @new, status: :ok}
-      else
-        format.json { render json:{status:"error", code:404, message: "New with ID '" + params[:id] + "' not found"}, status: :not_found}
+      if request.headers['token'].present?  #si hi ha token
+        @key = request.headers['token'].to_s
+        if User.exists?(api_key: @key)  #token valid
+          #cosa
+          if New.exists?(params[:id])
+            @new = New.find(params[:id])
+            format.json { render json: @new, status: :ok}
+          else
+            format.json { render json:{status:"error", code:404, message: "New with ID '" + params[:id] + "' not found"}, status: :not_found}
+          end
+        else  #token no valid
+          format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
+        end
+      else  #no han pasado token
+        format.json { render json:{status:"error", code:401, message: "no API key provided"}, status: :unauthorized}
       end
     end
   end
