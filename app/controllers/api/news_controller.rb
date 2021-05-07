@@ -81,30 +81,72 @@ class Api::NewsController < ApplicationController
   def upvote
     respond_to do |format|
       
-      if request.headers['token'].present?  #si hi ha token
-        @key = request.headers['token'].to_s
-        if User.exists?(api_key: @key)  #token valid. identifica al user.
-          @user  = User.find_by(api_key: @key)
-          if (!Likenew.exists?(user_id: @user.id, new_id: params[:newid]))  #si no està liked
-            @like = Likenew.new(user_id: @user.id, new_id: params[:newid])
-            @like.save
-            @publi = New.find(params[:newid])
-            @publi.points +=1
-            @publi.save
-            @author = User.find(@publi.user_id)
-            @author.karma +=1
-            @author.save
-            format.json { render json:{status:"OK", code:200, message: "New with ID '" + params[:newid] + "' upvoted successfully"}, status: :ok}  #el status: :ok nidea de si funcionarà
-          else   #si ja esta liked
-            format.json { render json:{status:"error", code:409, message: "New with ID '" + params[:newid] + "' has already been upvoted by user"}, status: :conflict} #el status: :conflict nidea de si funcionarà
+      if !params[:newid].nil? #si han passat el param
+      
+        if request.headers['token'].present?  #si hi ha token
+          @key = request.headers['token'].to_s
+          if User.exists?(api_key: @key)  #token valid. identifica al user.
+            @user  = User.find_by(api_key: @key)
+            if (!Likenew.exists?(user_id: @user.id, new_id: params[:newid]))  #si no està liked
+              @like = Likenew.new(user_id: @user.id, new_id: params[:newid])
+              @like.save
+              @publi = New.find(params[:newid])
+              @publi.points +=1
+              @publi.save
+              @author = User.find(@publi.user_id)
+              @author.karma +=1
+              @author.save
+              format.json { render json:{status:"OK", code:200, message: "New with ID '" + params[:newid] + "' upvoted successfully"}, status: :ok}  #el status: :ok nidea de si funcionarà
+            else   #si ja esta liked
+              format.json { render json:{status:"error", code:409, message: "New with ID '" + params[:newid] + "' has already been upvoted by user"}, status: :conflict} #el status: :conflict nidea de si funcionarà
+            end
+          else  #token no valid
+            format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
           end
-        else  #token no valid
-          format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
+        else  #no han pasado token
+          format.json { render json:{status:"error", code:401, message: "no API key provided"}, status: :unauthorized}
         end
-      else  #no han pasado token
-        format.json { render json:{status:"error", code:401, message: "no API key provided"}, status: :unauthorized}
+        
+      else #no han passat el param newid
+        format.json { render json:{status:"error", code:400, message: "no newid specified (query)"}, status: :bad_request}
       end
     end
+  end
+  
+  def unvote
+    respond_to do |format|
+      
+      if !params[:newid].nil? #si han passat el param
+      
+        if request.headers['token'].present?  #si hi ha token
+          @key = request.headers['token'].to_s
+          if User.exists?(api_key: @key)  #token valid. identifica al user.
+            @user  = User.find_by(api_key: @key)
+            
+            if (Likenew.exists?(user_id: @user.id, new_id: params[:newid]))  #si està liked
+              Likenew.find_by(user_id: @user.id, new_id: params[:newid]).destroy
+              @publi = New.find(params[:newid])
+              @publi.points -=1
+              @publi.save
+              @author = User.find(@publi.user_id)
+              @author.karma -=1
+              @author.save
+              format.json { render json:{status:"No content", code:204, message: "New with ID '" + params[:newid] + "' unvoted successfully"}, status: :no_content} #no retorna el status i el message perque "pel que es veu" 204 is not supposed to return a body
+            else
+              format.json { render json:{status:"error", code:404, message: "New with ID '" + params[:newid] + "' has not been upvoted by user"}, status: :not_found}
+            end
+          else  #token no valid
+            format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
+          end
+        else  #no han pasado token
+          format.json { render json:{status:"error", code:401, message: "no API key provided"}, status: :unauthorized}
+        end
+        
+      else #no han passat el param newid
+        format.json { render json:{status:"error", code:400, message: "no newid specified (query)"}, status: :bad_request}
+      end
+    end
+    
   end
   
 end

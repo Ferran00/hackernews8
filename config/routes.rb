@@ -42,8 +42,9 @@ Rails.application.routes.draw do
     get "/news" , to: "api/news#getNews"
    
     
-    #upvote new 
+    #upvote i unvote new 
     post "/news/upvote", to: "api/news#upvote"
+    delete "/news/upvote", to: "api/news#unvote"
     
     #users
     get "/users/profile", to: "api/users#getProfile"
