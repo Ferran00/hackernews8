@@ -65,7 +65,7 @@ class Api::RepliesController < ApplicationController
             if (!Likecomment.exists?(user_id: @user.id, comment_id: params[:comment_id]))  #si no està liked
               @like = Likecomment.new(user_id: current_user.id, comment_id: params[:comment_id])
               @like.save
-              @com = New.find(params[:comment_id])
+              @com = Comment.find(params[:comment_id])
               @com.points +=1
               @com.save
               @author = User.find(@com.user_id)
@@ -82,10 +82,46 @@ class Api::RepliesController < ApplicationController
           format.json { render json:{status:"error", code:401, message: "no API key provided"}, status: :unauthorized}
         end
         
-      else #no han passat el param newid
+      else #no han passat el param commentid
         format.json { render json:{status:"error", code:400, message: "no comment_id specified (query)"}, status: :bad_request}
       end
     end
+  end
+  
+  def unvote
+    respond_to do |format|
+      
+      if !params[:comment_id].nil? #si han passat el param
+      
+        if request.headers['token'].present?  #si hi ha token
+          @key = request.headers['token'].to_s
+          if User.exists?(api_key: @key)  #token valid. identifica al user.
+            @user  = User.find_by(api_key: @key)
+            
+            if (Likecomment.exists?(user_id: @user.id, comment_id: params[:comment_id]))  #si està liked
+              Likecomment.find_by(user_id: @user.id, comment_id: params[:comment_id]).destroy
+              @com = Comment.find(params[:comment_id])
+              @com.points -=1
+              @com.save
+              @author = User.find(@com.user_id)
+              @author.karma -=1
+              @author.save
+              format.json { render json:{status:"No content", code:204, message: "Comment with ID '" + params[:comment_id] + "' unvoted successfully"}, status: :no_content} #no retorna el status i el message perque "pel que es veu" 204 is not supposed to return a body
+            else
+              format.json { render json:{status:"error", code:404, message: "User has not upvoted a comment with ID '" + params[:comment_id] + "'"}, status: :not_found}
+            end
+          else  #token no valid
+            format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
+          end
+        else  #no han pasado token
+          format.json { render json:{status:"error", code:401, message: "no API key provided"}, status: :unauthorized}
+        end
+        
+      else #no han passat el param newid
+        format.json { render json:{status:"error", code:400, message: "no comment_id specified (query)"}, status: :bad_request}
+      end
+     end
+    
   end
   
  
