@@ -105,6 +105,23 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/New'
+                    
+  /news/ask:
+    get:
+      tags:
+      - news
+      summary: Returns a list of ask  news
+      description: Returns a list of ask news
+      operationId: getAskNews
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/New'
         
         
 components:
