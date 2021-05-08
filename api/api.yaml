@@ -7,7 +7,7 @@ info:
 servers:
   #heroku. comentar aquest i posar el vostre a la altra linea per a testejar a AWS
   - url: 'https://arcane-journey-15614.herokuapp.com/api/'
-  #- url: 'http://3.92.166.19:8080/api/'  #inserir aqui la IP del vostre Cloud9
+  #- url: 'http://52.90.199.253:8080/api/'  #inserir aqui la IP del vostre Cloud9
   #http://3.86.16.176/api/
 paths:
   /news/{id}:
@@ -209,6 +209,102 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/New'
+                  
+                  
+  
+  
+  /news:
+    post:
+      tags:
+      - news
+      summary: Create a new 
+      description: Create a url new, ask new.
+      operationId: create
+      parameters:
+      
+      - name: title
+        in: query
+        description: Title of the new to submit
+        required: true  
+        schema:
+          type: string
+      - name: url
+        in: query
+        description: Url of the new to submit
+        required: false  
+        schema:
+          type: string
+      - name: text
+        in: query
+        description: Text of the new to submit
+        required: false  
+        schema:
+          type: string    
+      - name: token
+        in: header
+        description: user's auth. token (API key)
+        required: true
+        schema:
+          type: string
+      responses:
+        201:
+          description: created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/New'
+        
+        409: 
+          description: Url already exists
+          content: 
+              application/json: 
+                schema: 
+                  type: object
+                  properties: 
+                    status: 
+                      type: integer
+                      example: 409
+                    message: 
+                      type: string
+                      example: "New with same URL already exists"
+            
+        400: 
+          description: Title is blank or url and text fields are blank
+          content:
+            application/json: 
+                schema: 
+                  type: object
+                  properties: 
+                    status: 
+                      type: integer
+                      example: 400
+                    message: 
+                      type: string
+                      example: "Title is blank or url and text fields are blank"
+              
+              
+        401:
+          description: 'Unauthorized: Invalid API key or no API key provided'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+              
+        
+        
+            
+            
+          
+                  
+        
+        
+        
+    
+                
+      
 
 
   /comments/upvote:
@@ -326,6 +422,8 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error400voteComment'
+                  
+      
  
  
 components:

@@ -48,6 +48,7 @@ class Api::NewsController < ApplicationController
       if request.headers['token'].present?
         @key = request.headers['token'].to_s
         if User.exists?(api_key: @key)
+          @user  = User.find_by(api_key: @key)
           if !params[:title].blank? && (!params[:url].blank? || !params[:text].blank?)
             
             @existingNewsWithSameURL = New.where(url: params[:url]).first
@@ -58,31 +59,28 @@ class Api::NewsController < ApplicationController
               end
               
               if !params[:url].blank? && !params[:text].blank? #si té url AND text
-                @new = New.new(title: params[:title], url: params[:url], text: "", isurl: isurl, points: params[:points], user_id: current_user.id)
+                @new = New.new(title: params[:title], url: params[:url], text: "", isurl: isurl, points: 0, user_id: @user.id)
                 @new.save
                 
                 #i ara posem el text com a primer comentari.
-                @firstComment = Comment.new(text: params[:text], points: 0,user_id: current_user.id, comment_id: nil, new_id: @new.id)  
+                @firstComment = Comment.new(text: params[:text], points: 0,user_id: @user.id, comment_id: nil, new_id: @new.id)  
                 @firstComment.save
-                format.json { render json: @new, id: @contribution.id} 
+                format.json { render json:{ new: @new , comment: @firstComment}, status: 201} 
               else
-                @new = New.new(title: params[:title], url: params[:url], text: params[:text], isurl: isurl, points: params[:points],user_id: current_user.id)
+                @new = New.new(title: params[:title], url: params[:url], text: params[:text], isurl: isurl, points: params[:points],user_id: @user.id)
                 @new.save
-                format.json { render json: @new, id: @contribution.id}
+                format.json { render json: @new, status: 201}
               end
-              
-              redirect_to newest_path
-              
             else  #si ja existeix una publicacio amb aquest url
               #redirigir a la pagina d'aquest item
-              format.json { render json: @existingNewsWithSameURLnew, status: :ok}
+              format.json { render json: {status:"error", code: 409, message: "New with same URL already exists"}}
             end
           else
-            format.json { render json:{status:"error", code:406, message: "Title is blank or url and text fields are blank"}, status: :conflict} 
+            format.json { render json:{status:"error", code:400, message: "Title is blank or url and text fields are blank"}, status: :bad_request} 
           end
-        else format.json { render json: {error: "error", code: 404, message: "The user with token: " + @key + " doesn't exist"}, status: :not_found}
+        else format.json { render json: {error: "error", code: 401, message: "The user with token: " + @key + " doesn't exist"}, status: :not_found}
         end 
-      else format.json { render json:{status:"error", code:403, message: "The autentication token is not provided"}, status: :forbidden}
+      else format.json { render json:{status:"error", code:401, message: "The autentication token is not provided"}, status: :forbidden}
       end
     end
   end

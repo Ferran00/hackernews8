@@ -38,7 +38,7 @@ Rails.application.routes.draw do
     #news 
     get "/news/new", to: "api/news#getNewNews"
     get "/news/ask", to: "api/news#getAskNews"
-    get "/news/create", to: "api/news#create"
+    post "/news", to: "api/news#create"
     get "/news/:id", to: "api/news#getInfoNew"
     get "/news" , to: "api/news#getNews"
     
