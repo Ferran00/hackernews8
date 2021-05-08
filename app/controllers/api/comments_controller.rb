@@ -1,4 +1,4 @@
-class Api::RepliesController < ApplicationController
+class Api::CommentsController < ApplicationController
   def createReply
     respond_to do |format|  
       if request.headers['token'].present?
@@ -63,7 +63,7 @@ class Api::RepliesController < ApplicationController
           if User.exists?(api_key: @key)  #token valid. identifica al user.
             @user  = User.find_by(api_key: @key)
             if (!Likecomment.exists?(user_id: @user.id, comment_id: params[:comment_id]))  #si no està liked
-              @like = Likecomment.new(user_id: current_user.id, comment_id: params[:comment_id])
+              @like = Likecomment.new(user_id: @user.id, comment_id: params[:comment_id])
               @like.save
               @com = Comment.find(params[:comment_id])
               @com.points +=1
@@ -82,7 +82,7 @@ class Api::RepliesController < ApplicationController
           format.json { render json:{status:"error", code:401, message: "no API key provided"}, status: :unauthorized}
         end
         
-      else #no han passat el param commentid
+      else #no han passat el param comment_id
         format.json { render json:{status:"error", code:400, message: "no comment_id specified (query)"}, status: :bad_request}
       end
     end
@@ -117,7 +117,7 @@ class Api::RepliesController < ApplicationController
           format.json { render json:{status:"error", code:401, message: "no API key provided"}, status: :unauthorized}
         end
         
-      else #no han passat el param newid
+      else #no han passat el param comment_id
         format.json { render json:{status:"error", code:400, message: "no comment_id specified (query)"}, status: :bad_request}
       end
      end

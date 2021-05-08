@@ -41,7 +41,6 @@ Rails.application.routes.draw do
     get "/news/create", to: "api/news#create"
     get "/news/:id", to: "api/news#getInfoNew"
     get "/news" , to: "api/news#getNews"
-   
     
     #upvote i unvote new 
     post "/news/upvote", to: "api/news#upvote"
@@ -53,7 +52,11 @@ Rails.application.routes.draw do
     get "/users/otherprofile", to: "api/users#getOtherProfile"
     
     #comments
-    post "/comment", to: "api/replies#createComment"
-    post "/reply", to: "api/replies#createReply"
+    post "/comment", to: "api/comments#createComment"
+    post "/reply", to: "api/comments#createReply"
+    
+    #upvote i unvote comments
+    post "/comments/upvote", to: "api/comments#upvote"
+    delete "/comments/upvote", to: "api/comments#unvote"
   end
 end
