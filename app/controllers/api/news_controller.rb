@@ -157,4 +157,30 @@ class Api::NewsController < ApplicationController
     
   end
   
+  
+ def newsUpvotedByUser
+    respond_to do |format|
+      
+      if request.headers['token'].present?  #si hi ha token
+        @key = request.headers['token'].to_s
+        if User.exists?(api_key: @key)  #token valid. identifica al user.
+          @user = User.find_by(api_key: @key)
+          #fer cosa
+          @likedSubmissions = Set[]
+          @likeneww = Likenew.where(:user_id => @user.id).all
+          @likeneww.each_with_index do |n,i|
+            new = New.find(n.new_id)
+            @likedSubmissions.add(new)
+          end
+          
+          format.json { render json: @likedSubmissions, status: :ok}
+        else  #token no valid
+            format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
+        end
+      else  #no han pasado token
+          format.json { render json:{status:"error", code:401, message: "no API key provided"}, status: :unauthorized}
+      end
+    end
+ end
+  
 end

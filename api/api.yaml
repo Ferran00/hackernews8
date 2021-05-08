@@ -7,7 +7,7 @@ info:
 servers:
   #heroku. comentar aquest i posar el vostre a la altra linea per a testejar a AWS
   #- url: 'https://arcane-journey-15614.herokuapp.com/api/'
-  - url: 'http://52.90.199.253:8080/api/'  #inserir aqui la IP del vostre Cloud9
+  - url: 'http://3.82.7.163:8080/api/'  #inserir aqui la IP del vostre Cloud9
   #http://3.86.16.176/api/
 paths:
   /news/{id}:
@@ -173,7 +173,6 @@ paths:
                 errorExample:
                   $ref: '#/components/examples/error400voteNew'
   
-  
   /news/new:
     get:
       tags:
@@ -190,14 +189,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/New'
-    
-  
   
   /news/ask:
     get:
       tags:
       - news
-      summary: Returns a list of ask  news
+      summary: Returns a list of ask news
       description: Returns a list of ask news
       operationId: getAskNews
       responses:
@@ -210,13 +207,32 @@ paths:
                 items:
                   $ref: '#/components/schemas/New'
   
-                  
-                  
-                  
+  /news/upvoted:
+    get:
+      tags:
+      - news
+      summary: Returns a list of the news upvoted by the user
+      description: Returns a list of the news upvoted by the user identified by the auth. token
+      operationId: newsUpvotedByUser
+      parameters:
+      - name: token
+        in: header
+        description: user's auth. token (API key)
+        required: true
+        schema:
+          type: string
+          
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/New'
+        
     
-                  
-                  
-  
   
   /news:
     post:
@@ -338,6 +354,15 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error401'
+        404:
+          description: error. No user with that ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404user'
                   
   /comments/upvote:
     post:
@@ -571,6 +596,11 @@ components:
         status: 404
         error: "Not Found"
         message: "No Comment with that ID"
+    error404user:
+      value:
+        status: 404
+        error: "Not Found"
+        message: "No user with that ID"
     error409voteNew:
       value:
         status: 409

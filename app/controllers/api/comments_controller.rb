@@ -131,8 +131,12 @@ class Api::CommentsController < ApplicationController
           if User.exists?(api_key: @key)  #token valid. identifica al user.
             @commentsAlreadyPainted = Set[]
             @userComments = nil
-            if !params[:userid].nil?
-              @userComments = Comment.where(:user_id => params[:userid]).order('points DESC').all
+            if !params[:userid].nil?  #si han passat userid, fem els del user specified
+              if User.exists?(params[:userid])  #si existeix el user especificat
+                @userComments = Comment.where(:user_id => params[:userid]).order('points DESC').all
+              else
+                format.json { render json: {error: "error", code: 404, message: "The user with ID: " + params[:userid] + " doesn't exist"}, status: :not_found}
+              end
             else
               @user = User.find_by(api_key: @key)
               @userComments = Comment.where(:user_id => @user.id).order('points DESC').all #es fa aixi el current_user? sembla que sí.
@@ -147,8 +151,6 @@ class Api::CommentsController < ApplicationController
       end
     end
   end
-  
- 
   
 end
 
