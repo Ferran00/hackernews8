@@ -9,3 +9,5 @@ Aplicació web - clon de Hacker News (https://news.ycombinator.com/) per a ASW -
 - Joel Tejada
 
 App: https://arcane-journey-15614.herokuapp.com/
+
+Documentació de la API: a api/api.yaml
