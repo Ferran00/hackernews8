@@ -231,8 +231,15 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/New'
-        
-    
+        401:
+          description: 'Unauthorized: Invalid API key or no API key provided'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
   
   /news:
     post:
