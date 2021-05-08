@@ -6,8 +6,8 @@ info:
   description: "This is the Open API documentation for our Hacker News clone's REST API, deployed at <https://arcane-journey-15614.herokuapp.com/>. <br><br><br>brrrr COMPLETAR!<br><br>All operations are executable. Only one operation requires authentication: `deleteTweet`. In this case, you must **Authorize** your request by providing the api_key vaule you got when you created the tweet."
 servers:
   #heroku. comentar aquest i posar el vostre a la altra linea per a testejar a AWS
-  - url: 'https://arcane-journey-15614.herokuapp.com/api/'
-  #- url: 'http://52.90.199.253:8080/api/'  #inserir aqui la IP del vostre Cloud9
+  #- url: 'https://arcane-journey-15614.herokuapp.com/api/'
+  - url: 'http://52.90.199.253:8080/api/'  #inserir aqui la IP del vostre Cloud9
   #http://3.86.16.176/api/
 paths:
   /news/{id}:
@@ -209,6 +209,11 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/New'
+  
+                  
+                  
+                  
+    
                   
                   
   
@@ -292,21 +297,48 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error401'
-              
-        
-        
             
+  /comments/threads:
+    get:
+      tags:
+      - comments
+      summary: Returns a list of user comments 
+      description: Returns a list user comments either by the authed user or by the specified user_id
+      operationId: threads
+      parameters:
+        - name: token
+          in: header
+          description: user's auth. token (API key)
+          required: true
+          schema:
+            type: string
+        - name: userid
+          in: query
+          description: id of the user whose threads are to be obtained
+          required: false
+          schema:
+            type: integer
+            format: int64
             
-          
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        401:
+          description: 'Unauthorized: Invalid API key or no API key provided'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
                   
-        
-        
-        
-    
-                
-      
-
-
   /comments/upvote:
     post:
       tags:
@@ -371,6 +403,9 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error400voteComment'
+                  
+                  
+                  
          
     delete:
       tags:
@@ -465,6 +500,34 @@ components:
           format: int64
           example: 4
           
+    Comment:
+      type: object
+      properties:
+        id: 
+          type: integer
+          example: 2
+        text:
+          type: string
+          example: "M'ha agradat molt la teva aportació al fòrum de l'assignatura. Aquí tens una píndola."
+        created_at:
+          type: string
+          format: date-time
+          example: '2021-05-05 15:47:32.238268000 +0000'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2021-05-05 15:47:32.238268000 +0000'
+        user_id:
+          type: integer
+          format: int64
+          example: 4
+        comment_id:
+          type: integer
+          example: 13
+        new_id:
+          type: integer
+          example: 2
+        
     ErrorResult:
       type: object
       properties:

@@ -52,6 +52,7 @@ Rails.application.routes.draw do
     get "/users/otherprofile", to: "api/users#getOtherProfile"
     
     #comments
+    get "comments/threads", to: "api/comments#threads"
     post "/comment", to: "api/comments#createComment"
     post "/reply", to: "api/comments#createReply"
     

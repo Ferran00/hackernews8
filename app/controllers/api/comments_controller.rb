@@ -124,6 +124,30 @@ class Api::CommentsController < ApplicationController
     
   end
   
+  def threads
+    respond_to do |format|
+      if request.headers['token'].present?  #si hi ha token
+          @key = request.headers['token'].to_s
+          if User.exists?(api_key: @key)  #token valid. identifica al user.
+            @commentsAlreadyPainted = Set[]
+            @userComments = nil
+            if !params[:userid].nil?
+              @userComments = Comment.where(:user_id => params[:userid]).order('points DESC').all
+            else
+              @user = User.find_by(api_key: @key)
+              @userComments = Comment.where(:user_id => @user.id).order('points DESC').all #es fa aixi el current_user? sembla que sí.
+            end  
+            format.json { render json: @userComments, status: :ok}
+          else 
+            format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
+          end
+      else 
+        format.json { render json:{status:"error", code:401, message: "no API key provided"}, status: :unauthorized}
+  
+      end
+    end
+  end
+  
  
   
 end
