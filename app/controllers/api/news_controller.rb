@@ -165,7 +165,7 @@ class Api::NewsController < ApplicationController
         @key = request.headers['token'].to_s
         if User.exists?(api_key: @key)  #token valid. identifica al user.
           @user = User.find_by(api_key: @key)
-          #fer cosa
+          
           @likedSubmissions = Set[]
           @likeneww = Likenew.where(:user_id => @user.id).all
           @likeneww.each_with_index do |n,i|

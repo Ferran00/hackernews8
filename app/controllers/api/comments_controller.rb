@@ -152,5 +152,31 @@ class Api::CommentsController < ApplicationController
     end
   end
   
+  def commentsUpvotedByUser
+    respond_to do |format|
+      
+      if request.headers['token'].present?  #si hi ha token
+        @key = request.headers['token'].to_s
+        if User.exists?(api_key: @key)  #token valid. identifica al user.
+          @user = User.find_by(api_key: @key)
+          
+          @likedComments = Set[]
+          @likecomment = Likecomment.where(:user_id => @user.id).all
+          @likecomment.each_with_index do |lc,i|
+            comment = Comment.find(lc.comment_id)
+            @likedComments.add(comment)
+          end
+          
+          format.json { render json: @likedComments, status: :ok}
+            
+        else  #token no valid
+            format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
+        end
+      else  #no han pasado token
+          format.json { render json:{status:"error", code:401, message: "no API key provided"}, status: :unauthorized}
+      end
+    end
+  end
+  
 end
 

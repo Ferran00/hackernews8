@@ -54,6 +54,7 @@ Rails.application.routes.draw do
     
     #comments
     get "comments/threads", to: "api/comments#threads"
+    get "comments/upvoted", to: "api/comments#commentsUpvotedByUser"
     post "/comment", to: "api/comments#createComment"
     post "/reply", to: "api/comments#createReply"
     
