@@ -7,7 +7,7 @@ info:
 servers:
   #heroku. comentar aquest i posar el vostre a la altra linea per a testejar a AWS
   - url: 'https://arcane-journey-15614.herokuapp.com/api/'
-  #- url: 'http://3.82.7.163:8080/api/'  #inserir aqui la IP del vostre Cloud9
+  #- url: 'http://3.89.43.10:8080/api/'  #inserir aqui la IP del vostre Cloud9
   #http://3.86.16.176/api/
 paths:
   /news/{id}:
@@ -248,26 +248,30 @@ paths:
       summary: Create a new 
       description: Create a url new, ask new.
       operationId: create
+      requestBody:
+        description: Provide the title, url and text of the new to submit. <br> Prodiving only the text without a URL will create a new of the ASK type. <br> providing a URL will create a new of the URL type. If both a URL and a text are provided, the text will be posted as a comment on the new.
+        content:
+          application/json:
+            schema:
+              required:
+              - title
+              type: object
+              properties:
+                title:
+                  type: string
+                  minLength: 1
+                  example: 'Amazing new technology'
+                url:
+                  type: string
+                  minLength: 1
+                  example: 'https://github.com/Ferran00/hackernews8/issues'
+                text:
+                  type: string
+                  minLength: 1
+                  example: 'this is a text asking some kind of tech question'
+        required: true
+        
       parameters:
-      
-      - name: title
-        in: query
-        description: Title of the new to submit
-        required: true  
-        schema:
-          type: string
-      - name: url
-        in: query
-        description: Url of the new to submit
-        required: false  
-        schema:
-          type: string
-      - name: text
-        in: query
-        description: Text of the new to submit
-        required: false  
-        schema:
-          type: string    
       - name: token
         in: header
         description: user's auth. token (API key)
