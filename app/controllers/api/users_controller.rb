@@ -22,7 +22,7 @@ class Api::UsersController < ApplicationController
           @key = request.headers['token'].to_s
           if User.exists?(api_key: @key)
             @user  = User.find_by(email: params[:email])
-            format.json { render json: {username: @user.username, created_at: @user.created_at, karma: @user.karma, about: @user.about}}
+            format.json { render json: {username: @user.username, created_at: @user.created_at, karma: @user.karma, about: @user.about, email: @user.email}}
           else
             format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
           end
