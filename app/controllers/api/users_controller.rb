@@ -62,9 +62,13 @@ class Api::UsersController < ApplicationController
       if request.headers['token'].present?
         @key = request.headers['token'].to_s
         if User.exists?(api_key: @key)
-          @user = User.find_by(:email => params[:email])
-          @otherUserNews = New.where(:user_id => @user.id).order('points DESC').all
-          format.json { render json: @otherUserNews, status: :ok}
+          if User.exists?(email: params[:email])
+            @myuser = User.find_by(:email => params[:email])
+            @otherUserNews = New.where(:user_id => @myuser.id).order('points DESC').all
+            format.json { render json: @otherUserNews, status: :ok}
+          else
+            format.json { render json: {error: "error", code: 404, message: "The user with email: " + params[:email] + " doesn't exist"}, status: :not_found}
+          end   
         else
           format.json { render json: {error: "error", code: 404, message: "The user with token: " + @key + " doesn't exist"}, status: :not_found}
         end
