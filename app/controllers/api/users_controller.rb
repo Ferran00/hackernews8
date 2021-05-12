@@ -62,12 +62,8 @@ class Api::UsersController < ApplicationController
       if request.headers['token'].present?
         @key = request.headers['token'].to_s
         if User.exists?(api_key: @key)
-        puts "-----------------------------------------primero-----------------------------------------------------"
           if User.exists?(email: params[:email])
-                    puts "-----------------------------------------segundo-----------------------------------------------------"
             @myuser = User.find_by(:email => params[:email])
-                    puts "-----------------------------------------"+@myuser.id+"-----------------------------------------------------"
-
             @otherUserNews = New.where(:user_id => @myuser.id).order('points DESC').all
             format.json { render json: @otherUserNews, status: :ok}
           else

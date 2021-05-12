@@ -51,6 +51,8 @@ Rails.application.routes.draw do
     get "/users/profile", to: "api/users#getProfile"
     put "/users/profile", to: "api/users#updateProfile"
     get "/users/otherprofile", to: "api/users#getOtherProfile"
+    get "/users/news", to: "api/users#getUserNews"
+
     
     #comments
     get "comments/threads", to: "api/comments#threads"
@@ -62,7 +64,5 @@ Rails.application.routes.draw do
     post "/comments/upvote", to: "api/comments#upvote"
     delete "/comments/upvote", to: "api/comments#unvote"
     
-    #userNews 
-    get "/news/user", to: "api/users#getUserNews"
   end
 end
