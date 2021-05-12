@@ -242,6 +242,30 @@ paths:
                   $ref: '#/components/examples/error401'
   
   /news:
+    get:
+      tags:
+      - news
+      summary: Returns a list of the news
+      description: Returns a list of the url type news in the system in desecent order by points 
+      operationId: getNews
+      parameters:
+      - name: token
+        in: header
+        description: user's auth. token (API key)
+        required: true
+        schema:
+          type: string
+          
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/New'
+
     post:
       tags:
       - news
@@ -324,13 +348,203 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error401'
+                  
+
+  /users/profile:
+    put:
+      tags:
+      - users
+      summary: Update About and email attributes of a user
+      description: Update About and email attributes of the authed user and returns the attributes of that user
+      operationId: updateProfile
+      parameters:
+        - name: token
+          in: header
+          description: user's auth. token (API key)
+          required: true
+          schema:
+            type: string
+        - name: about
+          in: query
+          description: text that the user wants to put in his profile
+          required: false
+          schema:
+            type: string
+            format: text
+        - name: email
+          in: query
+          description: email that the user wants to put in his profile
+          required: false
+          schema:
+            type: string
+            format: email
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        401:
+          description: 'Unauthorized: Invalid API key or no API key provided'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+    
+    get:
+      tags:
+      - users
+      summary: Show the information of a specific user
+      description: Show the information of the auth user (my information as user).
+      operationId: getProfile
+      parameters:
+      - name: token
+        in: header
+        description: user's auth. token (API key)
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        401:
+          description: 'Unauthorized: Invalid API key or no API key provided'
+          content:
+            application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResult'
+               examples:
+                 errorExample:
+                  $ref: '#/components/examples/error401invalid'
+    
+                
+  /users/otherprofile:
+    get:
+      tags:
+      - users
+      summary: Show the information of a specific user
+      description: Show the information of a specific user (other user). The user is identified by the email parameter
+      operationId: getOtherProfile
+      parameters:
+      - name: token
+        in: header
+        description: user's auth. token (API key)
+        required: true
+        schema:
+          type: string
+      - name: email
+        in: query
+        description: email of the user whose profile information is to be obtained
+        required: true
+        schema:
+          type: string
+          format: email
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/OtherUser'
+        401:
+          description: 'Unauthorized: Invalid API key or no API key provided'
+          content:
+            application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResult'
+               examples:
+                 errorExample:
+                  $ref: '#/components/examples/error401'
+        400:
+          description: 'No email specified (query)'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error400email'
+                  
+  /users/news:
+    get:
+      tags:
+      - users
+      summary: Returns a list of user news 
+      description: Returns a list user news by the user identified with the specified email
+      operationId: getUserNews
+      parameters:
+        - name: token
+          in: header
+          description: user's auth. token (API key)
+          required: true
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: email of the user whose threads are to be obtained
+          required: false
+          schema:
+            type: integer
+            format: email
             
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/New'
+        401:
+          description: 'Unauthorized: Invalid API key or no API key provided'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        404:
+          description: error. No user with that email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404user'
+                  
+        400:
+          description: 'no email specified (query)'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error400email'
+                  
   /comments/threads:
     get:
       tags:
       - comments
       summary: Returns a list of user comments 
-      description: Returns a list user comments either by the authed user or by the specified user_id
+      description: Returns a list user comments either by the authed user or by the specified email
       operationId: threads
       parameters:
         - name: token
@@ -339,13 +553,13 @@ paths:
           required: true
           schema:
             type: string
-        - name: userid
+        - name: email
           in: query
-          description: id of the user whose threads are to be obtained
+          description: email of the user whose threads are to be obtained
           required: false
           schema:
             type: integer
-            format: int64
+            format: email
             
       responses:
         200:
@@ -366,7 +580,7 @@ paths:
                 errorExample:
                   $ref: '#/components/examples/error401'
         404:
-          description: error. No user with that ID
+          description: error. No user with that email
           content:
             application/json:
               schema:
@@ -409,7 +623,126 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error401'
-                  
+  
+  /reply:
+    post:
+      tags:
+        - comments
+      summary: Create a reply to a comment 
+      description: Create a reply to a comment
+      operationId: createReply
+      requestBody:
+        description: Provide the text of the reply and the id of the comment you want to comment.
+        content:
+          application/json:
+            schema:
+              required:
+              - new_id
+              type: object
+              properties:
+                new_id:
+                  type: integer
+                  minLength: 1
+                  example: 1
+                text:
+                  type: string
+                  minLength: 1
+                  example: 'This post is incredible! Thank you for the info'
+        required: true
+      parameters:
+      - name: token
+        in: header
+        description: user's auth. token (API key)
+        required: true
+        schema:
+          type: string
+      responses:
+        201:
+          description: created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        
+        400: 
+          description: The text or the new_id provided are blank
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error400comment'
+        401:
+          description: 'Unauthorized: Invalid API key or no API key provided'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+  
+  /comment:
+    post:
+      tags:
+        - comments
+      summary: Create a comment 
+      description: Create a comment on a new
+      operationId: createComment
+      requestBody:
+        description: Provide the text of the comment and the id of the new you want to comment.
+        content:
+          application/json:
+            schema:
+              required:
+              - comment_id
+              type: object
+              properties:
+                comment_id:
+                  type: integer
+                  minLength: 1
+                  example: 1
+                text:
+                  type: string
+                  minLength: 1
+                  example: 'This comment is so offensive! You may delete it'
+        required: true
+      parameters:
+      - name: token
+        in: header
+        description: user's auth. token (API key)
+        required: true
+        schema:
+          type: string
+      responses:
+        201:
+          description: created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        
+        400: 
+          description: The text or the new_id provided are blank
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error400comment'
+        401:
+          description: 'Unauthorized: Invalid API key or no API key provided'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+
+
   /comments/upvote:
     post:
       tags:
@@ -474,9 +807,7 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error400voteComment'
-                  
-                  
-                  
+         
          
     delete:
       tags:
@@ -598,7 +929,58 @@ components:
         new_id:
           type: integer
           example: 2
-        
+    
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "patrick321"
+        created_at:
+          type: string
+          format: date-time
+          example: "2021-05-03T18:45:40.168Z"
+        karma:
+          type: integer
+          example: 4
+        about:
+          type: string
+          format: text
+          example: "This is my About. Buenas tardes soy Patricio"
+        email:
+          type: string
+          format: email
+          example: "patricioestrella@gmail.com"
+        api_key:
+          type: string
+          example: "hp7L4WPsHaWK4RDzeh37sVAu"
+        id:
+          type: integer
+          format: int64
+          example: 1
+    
+    OtherUser:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "patrick321"
+        created_at:
+          type: string
+          format: date-time
+          example: "2021-05-03T18:45:40.168Z"
+        karma:
+          type: integer
+          example: 4
+        about:
+          type: string
+          format: text
+          example: "This is my About. Buenas tardes soy Patricio"
+        email:
+          type: string
+          format: email
+          example: "patricioestrella@gmail.com"
+          
     ErrorResult:
       type: object
       properties:
@@ -616,13 +998,28 @@ components:
       value:
         status: 400
         error: "Bad Request"
-        message: "no newid specified (query)"
+        message: "No new_id specified (query)"
     error400voteComment:
       value:
         status: 400
         error: "Bad Request"
-        message: "no comment_id specified (query)"
+        message: "No comment_id specified (query)"
+    error400email:
+      value:
+        status: 400
+        error: "Bad Request"
+        message: "No email specified (query)"
+    error400comment:
+      value:
+        status: 400
+        error: "Bad Request"
+        message: "The text or the new_id provided are blank (query)"
     error401:
+      value:
+        status: 401
+        error: "Unauthorized"
+        message: "The authentication token is not provided"
+    error401invalid:
       value:
         status: 401
         error: "Unauthorized"
@@ -646,7 +1043,7 @@ components:
       value:
         status: 404
         error: "Not Found"
-        message: "No user with that ID"
+        message: "No User with that email"
     error409voteNew:
       value:
         status: 409
