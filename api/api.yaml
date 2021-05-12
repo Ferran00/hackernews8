@@ -324,7 +324,136 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error401'
-            
+
+  /users/profile:
+    put:
+      tags:
+      - users
+      summary: Update About and email attributes of a user
+      description: Update About and email attributes of the authed user and returns the attributes of that user
+      operationId: updateProfile
+      parameters:
+        - name: token
+          in: header
+          description: user's auth. token (API key)
+          required: true
+          schema:
+            type: string
+        - name: about
+          in: query
+          description: text that the user wants to put in his profile
+          required: false
+          schema:
+            type: string
+            format: text
+        - name: email
+          in: query
+          description: email that the user wants to put in his profile
+          required: false
+          schema:
+            type: string
+            format: email
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        401:
+          description: 'Unauthorized: Invalid API key or no API key provided'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+    get:
+      tags:
+      - users
+      summary: Show the information of a specific user
+      description: Show the information of the auth user (my information as user).
+      operationId: getProfile
+      parameters:
+      - name: token
+        in: header
+        description: user's auth. token (API key)
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        401:
+          description: 'Unauthorized: Invalid API key or no API key provided'
+          content:
+            application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResult'
+               examples:
+                 errorExample:
+                  $ref: '#/components/examples/error401invalid'
+    
+                
+  /users/otherprofile:
+    get:
+      tags:
+      - users
+      summary: Show the information of a specific user
+      description: Show the information of a specific user (other user). The user is identified by the email parameter
+      operationId: getOtherProfile
+      parameters:
+      - name: token
+        in: header
+        description: user's auth. token (API key)
+        required: true
+        schema:
+          type: string
+      - name: email
+        in: query
+        description: email of the user whose profile information are to be obtained
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/OtherUser'
+        401:
+          description: 'Unauthorized: Invalid API key or no API key provided'
+          content:
+            application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResult'
+               examples:
+                 errorExample:
+                  $ref: '#/components/examples/error401'
+        400:
+          description: 'no email specified (body)'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error400email'
+                  
+
+                  
   /comments/threads:
     get:
       tags:
@@ -339,9 +468,9 @@ paths:
           required: true
           schema:
             type: string
-        - name: userid
+        - name: email
           in: query
-          description: id of the user whose threads are to be obtained
+          description: email of the user whose threads are to be obtained
           required: false
           schema:
             type: integer
@@ -366,7 +495,7 @@ paths:
                 errorExample:
                   $ref: '#/components/examples/error401'
         404:
-          description: error. No user with that ID
+          description: error. No user with that email
           content:
             application/json:
               schema:
@@ -598,7 +727,58 @@ components:
         new_id:
           type: integer
           example: 2
-        
+    
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "patrick321"
+        created_at:
+          type: string
+          format: date-time
+          example: "2021-05-03T18:45:40.168Z"
+        karma:
+          type: integer
+          example: 4
+        about:
+          type: string
+          format: text
+          example: "This is my About. Buenas tardes soy Patricio"
+        email:
+          type: string
+          format: email
+          example: "patricioestrella@gmail.com"
+        api_key:
+          type: string
+          example: "hp7L4WPsHaWK4RDzeh37sVAu"
+        id:
+          type: integer
+          format: int64
+          example: 1
+    
+    OtherUser:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "patrick321"
+        created_at:
+          type: string
+          format: date-time
+          example: "2021-05-03T18:45:40.168Z"
+        karma:
+          type: integer
+          example: 4
+        about:
+          type: string
+          format: text
+          example: "This is my About. Buenas tardes soy Patricio"
+        email:
+          type: string
+          format: email
+          example: "patricioestrella@gmail.com"
+          
     ErrorResult:
       type: object
       properties:
@@ -616,13 +796,23 @@ components:
       value:
         status: 400
         error: "Bad Request"
-        message: "no newid specified (query)"
+        message: "No new_id specified (query)"
     error400voteComment:
       value:
         status: 400
         error: "Bad Request"
-        message: "no comment_id specified (query)"
+        message: "No comment_id specified (query)"
+    error400email:
+      value:
+        status: 400
+        error: "Bad Request"
+        message: "No email specified (query)"
     error401:
+      value:
+        status: 401
+        error: "Unauthorized"
+        message: "The authentication token is not provided"
+    error401invalid:
       value:
         status: 401
         error: "Unauthorized"
@@ -646,7 +836,7 @@ components:
       value:
         status: 404
         error: "Not Found"
-        message: "No user with that ID"
+        message: "No User with that email"
     error409voteNew:
       value:
         status: 409
