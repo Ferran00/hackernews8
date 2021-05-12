@@ -14,10 +14,10 @@ class Api::CommentsController < ApplicationController
             format.json { render json: {error: "error", code: 400, message: "The text or the comment_id provided are blank"}, status: :bad_request}
           end
         else
-            format.json { render json: {error: "error", code: 404, message: "The user with token: " + @key + " doesn't exist"}, status: :not_found}
+          format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
         end
       else
-        format.json { render json:{status:"error", code:401, message: "The autentication token is not provided"}, status: :forbidden}
+        format.json { render json:{status:"error", code:401, message: "The authentication token is not provided"}, status: :unauthorized}
       end
     end
   end
@@ -36,10 +36,10 @@ class Api::CommentsController < ApplicationController
             format.json { render json: {error: "error", code: 400, message: "The text or the new_id provided are blank"}, status: :bad_request}
           end
         else
-            format.json { render json: {error: "error", code: 404, message: "The user with token: " + @key + " doesn't exist"}, status: :not_found}
+          format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
         end
       else
-        format.json { render json:{status:"error", code:401, message: "The autentication token is not provided"}, status: :forbidden}
+        format.json { render json:{status:"error", code:401, message: "The authentication token is not provided"}, status: :unauthorized}
       end
     end
   end
@@ -79,11 +79,11 @@ class Api::CommentsController < ApplicationController
             format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
           end
         else  #no han pasado token
-          format.json { render json:{status:"error", code:401, message: "no API key provided"}, status: :unauthorized}
+          format.json { render json:{status:"error", code:401, message: "The authentication token is not provided"}, status: :unauthorized}
         end
         
       else #no han passat el param comment_id
-        format.json { render json:{status:"error", code:400, message: "no comment_id specified (query)"}, status: :bad_request}
+        format.json { render json:{status:"error", code:400, message: "No comment_id specified (query)"}, status: :bad_request}
       end
     end
   end
@@ -114,11 +114,11 @@ class Api::CommentsController < ApplicationController
             format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
           end
         else  #no han pasado token
-          format.json { render json:{status:"error", code:401, message: "no API key provided"}, status: :unauthorized}
+          format.json { render json:{status:"error", code:401, message: "The authentication token is not provided"}, status: :unauthorized}
         end
         
       else #no han passat el param comment_id
-        format.json { render json:{status:"error", code:400, message: "no comment_id specified (query)"}, status: :bad_request}
+        format.json { render json:{status:"error", code:400, message: "No comment_id specified (query)"}, status: :bad_request}
       end
      end
     
@@ -147,7 +147,7 @@ class Api::CommentsController < ApplicationController
             format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
           end
       else 
-        format.json { render json:{status:"error", code:401, message: "no API key provided"}, status: :unauthorized}
+        format.json { render json:{status:"error", code:401, message: "The authentication token is not provided"}, status: :unauthorized}
   
       end
     end
@@ -174,7 +174,7 @@ class Api::CommentsController < ApplicationController
             format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
         end
       else  #no han pasado token
-          format.json { render json:{status:"error", code:401, message: "no API key provided"}, status: :unauthorized}
+          format.json { render json:{status:"error", code:401, message: "The authentication token is not provided"}, status: :unauthorized}
       end
     end
   end
