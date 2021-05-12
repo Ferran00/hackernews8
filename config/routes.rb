@@ -61,5 +61,8 @@ Rails.application.routes.draw do
     #upvote i unvote comments
     post "/comments/upvote", to: "api/comments#upvote"
     delete "/comments/upvote", to: "api/comments#unvote"
+    
+    #userNews 
+    get "/news/user", to: "api/users#getUserNews"
   end
 end

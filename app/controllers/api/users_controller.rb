@@ -56,4 +56,23 @@ class Api::UsersController < ApplicationController
       end
     end
   end
+  
+  def getUserNews 
+    respond_to do |format|
+      if request.headers['token'].present?
+        @key = request.headers['token'].to_s
+        if User.exists?(api_key: @key)
+          @user  = params[:email]
+          @otherUserNews = New.where(:user_id => @user.id).order('points DESC').all
+          format.json { render json: @otherUserNews, status: :ok}
+        else
+          format.json { render json: {error: "error", code: 404, message: "The user with token: " + @key + " doesn't exist"}, status: :not_found}
+        end
+      else
+        format.json { render json:{status:"error", code:403, message: "The autentication token is not provided"}, status: :forbidden}
+      end
+    end
+  end
+          
+          
 end
