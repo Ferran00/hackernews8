@@ -11,13 +11,13 @@ class Api::CommentsController < ApplicationController
             @comment.save
             format.json { render json: @comment, status: :ok}
           else
-            format.json { render json: {error: "error", code: 404, message: "The text or the comment_id provided are blank"}, status: :not_found}
+            format.json { render json: {error: "error", code: 400, message: "The text or the comment_id provided are blank"}, status: :bad_request}
           end
         else
             format.json { render json: {error: "error", code: 404, message: "The user with token: " + @key + " doesn't exist"}, status: :not_found}
         end
       else
-        format.json { render json:{status:"error", code:403, message: "The autentication token is not provided"}, status: :forbidden}
+        format.json { render json:{status:"error", code:401, message: "The autentication token is not provided"}, status: :forbidden}
       end
     end
   end
@@ -33,13 +33,13 @@ class Api::CommentsController < ApplicationController
             @comment.save
             format.json { render json: @comment, status: :ok}
           else
-            format.json { render json: {error: "error", code: 404, message: "The text or the new_id provided are blank"}, status: :not_found}
+            format.json { render json: {error: "error", code: 400, message: "The text or the new_id provided are blank"}, status: :bad_request}
           end
         else
             format.json { render json: {error: "error", code: 404, message: "The user with token: " + @key + " doesn't exist"}, status: :not_found}
         end
       else
-        format.json { render json:{status:"error", code:403, message: "The autentication token is not provided"}, status: :forbidden}
+        format.json { render json:{status:"error", code:401, message: "The autentication token is not provided"}, status: :forbidden}
       end
     end
   end
@@ -131,11 +131,12 @@ class Api::CommentsController < ApplicationController
           if User.exists?(api_key: @key)  #token valid. identifica al user.
             @commentsAlreadyPainted = Set[]
             @userComments = nil
-            if !params[:userid].nil?  #si han passat userid, fem els del user specified
-              if User.exists?(params[:userid])  #si existeix el user especificat
-                @userComments = Comment.where(:user_id => params[:userid]).order('points DESC').all
+            if !params[:email].nil?  #si han passat userid, fem els del user specified
+              if User.exists?(params[:email])  #si existeix el user especificat
+                @myuser = User.find_by(:email => params[:email])  
+                @userComments = Comment.where(:user_id => @myuser.id).order('points DESC').all
               else
-                format.json { render json: {error: "error", code: 404, message: "The user with ID: " + params[:userid] + " doesn't exist"}, status: :not_found}
+                format.json { render json: {error: "error", code: 404, message: "The user with email: " + params[:email] + " doesn't exist"}, status: :not_found}
               end
             else
               @user = User.find_by(api_key: @key)
