@@ -77,6 +77,26 @@ class Api::UsersController < ApplicationController
       end
     end
   end
-          
+  
+   def getUserComments 
+    respond_to do |format|
+      if request.headers['token'].present?
+        @key = request.headers['token'].to_s
+        if User.exists?(api_key: @key)
+          if User.exists?(email: params[:email])
+            @myuser = User.find_by(:email => params[:email])
+            @otherUserComments = Comment.where(:user_id => @myuser.id).order('points DESC').all
+            format.json { render json: @otherUserComments, status: :ok}
+          else
+            format.json { render json: {error: "error", code: 404, message: "The user with email: " + params[:email] + " doesn't exist"}, status: :not_found}
+          end   
+        else
+          format.json { render json: {error: "error", code: 404, message: "The user with token: " + @key + " doesn't exist"}, status: :not_found}
+        end
+      else
+        format.json { render json:{status:"error", code:403, message: "The autentication token is not provided"}, status: :forbidden}
+      end
+    end
+  end    
           
 end
