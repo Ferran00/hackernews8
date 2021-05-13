@@ -79,6 +79,7 @@ class Api::UsersController < ApplicationController
     return CommentComplete.new(singleComment, repliesCompleted)
   end
   
+  
   def getUserNews 
     respond_to do |format|
       if request.headers['token'].present?
