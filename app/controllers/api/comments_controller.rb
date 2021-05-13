@@ -127,7 +127,9 @@ class Api::CommentsController < ApplicationController
     @commentsAlreadyUsed.add(singleComment)
     @comReplies = Comment.where(comment_id: singleComment.id).order('points DESC').all
     @comReplies.each do |rep, i|
-      if !@commentsAlreadyUsed.subset?([rep])
+      setRep = Set[]
+      setRep.add(rep)
+      if !@commentsAlreadyUsed.subset?(setRep)
         repliesCompleted.add(funcio(rep))
       end
     end
