@@ -3,6 +3,9 @@ class Api::UsersController < ApplicationController
   CommentComplete = Struct.new(:comment, :replies) do
   end
   
+  NewComplete = Struct.new(:new, :comments) do
+  end
+  
   def getProfile
     respond_to do |format|  
       if request.headers['token'].present?
@@ -64,7 +67,7 @@ class Api::UsersController < ApplicationController
       end
     end
   end
-  
+
   def funcio(singleComment)
     repliesCompleted = Set[]
     @commentsAlreadyUsed.add(singleComment)
@@ -86,12 +89,17 @@ class Api::UsersController < ApplicationController
         @key = request.headers['token'].to_s
         if User.exists?(api_key: @key)
           @commentsAlreadyUsed = Set[]
-          @userComments = nil
+          @userNews = nil
           if User.exists?(params[:id])  #si existeix el user especificat
-            @userNews = New.where(:user_id => params[:id]).order('points DESC').all
             @result = Set[]
-            @userNews.each do |com, i|
-              @result.add(funcio(com))
+            @userNews = New.where(:user_id => params[:id]).order('points DESC').all
+            @userNews.each do |new, i|
+              @resultpartial = Set[]
+              @newComments = Comment.where(:new_id => new.id && :comment_id.nil?).all
+              @newComments.each do |com, i|
+                @resultpartial.add(funcio(com))
+              end
+              @result.add(@resultpartial)
             end
             format.json { render json: @result, status: :ok}
           else
