@@ -16,16 +16,15 @@ class Api::UsersController < ApplicationController
   end
   
   def getOtherProfile
-    respond_to do |format|  
-      # if !params[:email].nil?
+    respond_to do |format|
       if request.headers['token'].present?
         @key = request.headers['token'].to_s
         if User.exists?(api_key: @key)
-          if User.exists?(email: params[:email])
-            @user  = User.find_by(email: params[:email])
-            format.json { render json: {username: @user.username, created_at: @user.created_at, karma: @user.karma, about: @user.about, email: @user.email}}
+          if User.exists?(id: params[:id])
+            @user  = User.find_by(id: params[:id])
+            format.json { render json: {username: @user.username, created_at: @user.created_at, karma: @user.karma, about: @user.about}, status: :ok}
           else
-            format.json { render json:{status:"error", code:404, message: "User with email '" + params[:email] + "' not found"}, status: :not_found}
+            format.json { render json:{status:"error", code:404, message: "User with ID '" + params[:id] + "' not found"}, status: :not_found}
           end  
         else
           format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
@@ -33,9 +32,6 @@ class Api::UsersController < ApplicationController
       else
         format.json { render json:{status:"error", code:401, message: "The authentication token is not provided"}, status: :unauthorized}
       end
-      # else 
-        # format.json { render json:{status:"error", code:400, message: "No email specified (query)"}, status: :bad_request}
-      # end
     end
   end
   
@@ -67,25 +63,20 @@ class Api::UsersController < ApplicationController
   
   def getUserNews 
     respond_to do |format|
-      if !params[:email].nil?
-        if request.headers['token'].present?
-          @key = request.headers['token'].to_s
-          if User.exists?(api_key: @key)
-            if User.exists?(email: params[:email])
-              @myuser = User.find_by(:email => params[:email])
-              @otherUserNews = New.where(:user_id => @myuser.id).order('points DESC').all
-              format.json { render json: @otherUserNews, status: :ok}
-            else
-              format.json { render json: {error: "error", code: 404, message: "The user with email: " + params[:email] + " doesn't exist"}, status: :not_found}
-            end   
+      if request.headers['token'].present?
+        @key = request.headers['token'].to_s
+        if User.exists?(api_key: @key)
+          if User.exists?(params[:id])
+            @userNews = New.where(:user_id => params[:id]).order('points DESC').all
+            format.json { render json: @userNews, status: :ok}
           else
-            format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
-          end
+            format.json { render json: {error: "error", code: 404, message: "The user with ID: " + params[:id] + " doesn't exist"}, status: :not_found}
+          end   
         else
-          format.json { render json:{status:"error", code:401, message: "The authentication token is not provided"}, status: :unauthorized}
+          format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
         end
-      else 
-        format.json { render json:{status:"error", code:400, message: "No email specified (query)"}, status: :bad_request}
+      else
+        format.json { render json:{status:"error", code:401, message: "The authentication token is not provided"}, status: :unauthorized}
       end
     end
   end

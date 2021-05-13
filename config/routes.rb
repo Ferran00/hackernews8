@@ -50,12 +50,12 @@ Rails.application.routes.draw do
     #users
     get "/users/profile", to: "api/users#getProfile"
     put "/users/profile", to: "api/users#updateProfile"
-    get "/users/otherprofile/:email", to: "api/users#getOtherProfile"
-    get "/users/news", to: "api/users#getUserNews"
+    get "/users/otherprofile/:id", to: "api/users#getOtherProfile"
+    get "/users/news/:id", to: "api/users#getUserNews"
 
     #comments
-    get "comments/threads", to: "api/comments#threads"
-    get "comments/upvoted", to: "api/comments#commentsUpvotedByUser"
+    get "comments/threads/:id", to: "api/comments#threads"
+    get "comments/upvoted/", to: "api/comments#commentsUpvotedByUser"
     post "/comment", to: "api/comments#createComment"
     post "/reply", to: "api/comments#createReply"
     

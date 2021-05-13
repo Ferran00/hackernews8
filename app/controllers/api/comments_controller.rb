@@ -127,25 +127,19 @@ class Api::CommentsController < ApplicationController
   def threads
     respond_to do |format|
       if request.headers['token'].present?  #si hi ha token
-          @key = request.headers['token'].to_s
-          if User.exists?(api_key: @key)  #token valid. identifica al user.
-            @commentsAlreadyPainted = Set[]
-            @userComments = nil
-            if !params[:email].nil?  #si han passat userid, fem els del user specified
-              if User.exists?(params[:email])  #si existeix el user especificat
-                @myuser = User.find_by(:email => params[:email])  
-                @userComments = Comment.where(:user_id => @myuser.id).order('points DESC').all
-              else
-                format.json { render json: {error: "error", code: 404, message: "The user with email: " + params[:email] + " doesn't exist"}, status: :not_found}
-              end
-            else
-              @user = User.find_by(api_key: @key)
-              @userComments = Comment.where(:user_id => @user.id).order('points DESC').all #es fa aixi el current_user? sembla que sí.
-            end  
+        @key = request.headers['token'].to_s
+        if User.exists?(api_key: @key)  #token valid. identifica al user.
+          @commentsAlreadyPainted = Set[]
+          @userComments = nil
+          if User.exists?(params[:id])  #si existeix el user especificat
+            @userComments = Comment.where(:user_id => params[:id]).order('points DESC').all
             format.json { render json: @userComments, status: :ok}
-          else 
-            format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
+          else
+            format.json { render json: {error: "error", code: 404, message: "The user with ID: " + params[:id] + " doesn't exist"}, status: :not_found}
           end
+        else 
+          format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
+        end
       else 
         format.json { render json:{status:"error", code:401, message: "The authentication token is not provided"}, status: :unauthorized}
   
