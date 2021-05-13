@@ -134,7 +134,7 @@ class Api::CommentsController < ApplicationController
             @userComments = Comment.where(:user_id => params[:id]).order('points DESC').all
             @userComments.each do |com, i|
               @comReplies = Comment.where(comment_id: com.id).order('points DESC').all
-              @result.add(com, @comReplies)
+              @result.add(CommentComplete.new(com, @comReplies))
             end            
             format.json { render json: @userComments, status: :ok}
           else
