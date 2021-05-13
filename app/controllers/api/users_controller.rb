@@ -1,4 +1,8 @@
 class Api::UsersController < ApplicationController
+  
+  CommentComplete = Struct.new(:comment, :replies) do
+  end
+  
   def getProfile
     respond_to do |format|  
       if request.headers['token'].present?
