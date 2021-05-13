@@ -122,20 +122,31 @@ class Api::CommentsController < ApplicationController
     
   end
   
+  def funcio(singleComment)
+    repliesCompleted = Set[]
+    @commentsAlreadyUsed.add(singleComment)
+    @comReplies = Comment.where(comment_id: com.id).order('points DESC').all
+    @comReplies.each do |rep, i|
+      if not @commentsAlreadyUsed.exists(rep)
+        repliesCompleted.add(funcio(rep))
+      end
+    end
+    return CommentComplete.new(com, repliesCompleted)
+  end
+  
   def threads
     respond_to do |format|
       if request.headers['token'].present?  #si hi ha token
         @key = request.headers['token'].to_s
         if User.exists?(api_key: @key)  #token valid. identifica al user.
-          @commentsAlreadyPainted = Set[]
+          @commentsAlreadyUsed = Set[]
           @userComments = nil
           if User.exists?(params[:id])  #si existeix el user especificat
             @result = Set[]
             @userComments = Comment.where(:user_id => params[:id]).order('points DESC').all
             @userComments.each do |com, i|
-              @comReplies = Comment.where(comment_id: com.id).order('points DESC').all
-              @result.add(CommentComplete.new(com, @comReplies))
-            end            
+              @result.add(funcio(com))
+            end
             format.json { render json: @result, status: :ok}
           else
             format.json { render json: {error: "error", code: 404, message: "The user with ID: " + params[:id] + " doesn't exist"}, status: :not_found}
