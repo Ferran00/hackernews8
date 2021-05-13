@@ -18,6 +18,12 @@ paths:
       description: Returns a specific new, identified by id
       operationId: getInfoNew
       parameters:
+      - name: token
+        in: header
+        description: user's auth. token (API key)
+        required: true
+        schema:
+          type: string
       - name: id
         in: path
         description: ID of the new to return
@@ -25,12 +31,6 @@ paths:
         schema:
           type: integer
           format: int64 #nose
-      - name: token
-        in: header
-        description: user's auth. token (API key)
-        required: true
-        schema:
-          type: string
       responses:
         200:
           description: successful operation
@@ -56,22 +56,30 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error401'
-    
+
+
   /news/upvote:
     post:
       tags:
       - upvotes
       summary: Upvote a specific new
       description: Upvote a specific new, identified by the newid parameter
-      operationId: 'news#upvote'
-      parameters:
-      - name: newid
-        in: query
-        description: ID of the new to upvote
+      operationId: upvote
+      requestBody:
+        description: Provide the id of the new you want to upvote
+        content:
+          application/json:
+            schema:
+              required:
+              - newid
+              type: object
+              properties:
+                newid:
+                  type: integer
+                  minLength: 1
+                  example: 2
         required: true
-        schema:
-          type: integer
-          format: int64 #nose
+      parameters:
       - name: token
         in: header
         description: user's auth. token (API key)
@@ -92,7 +100,7 @@ paths:
                     example: 200
                   message: 
                     type: string
-                    example: 'New with ID 3 upvoted successfully'
+                    example: 'New with ID 2 upvoted successfully'
           
         409:
           description: 'conflict: New has already been upvoted by user'
@@ -127,7 +135,7 @@ paths:
       - upvotes
       summary: Unvote a specific new
       description: Unvote a specific new (remove the vote). The new is identified by the newid parameter
-      operationId: 'news#unvote'
+      operationId: unvote
       parameters:
       - name: newid
         in: query
@@ -180,6 +188,13 @@ paths:
       summary: Returns a list of newest url news
       description: Returns a list of newest url news
       operationId: getNewNews
+      parameters:
+      - name: token
+        in: header
+        description: user's auth. token (API key)
+        required: true
+        schema:
+          type: string
       responses:
         200:
           description: successful operation
@@ -189,6 +204,24 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/New'
+        404:
+          description: error. User has not upvoted a new with the specified ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404new'
+        401:
+          description: 'Unauthorized: Invalid API key or no API key provided'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
   
   /news/ask:
     get:
@@ -197,6 +230,13 @@ paths:
       summary: Returns a list of ask news
       description: Returns a list of ask news
       operationId: getAskNews
+      parameters:
+      - name: token
+        in: header
+        description: user's auth. token (API key)
+        required: true
+        schema:
+          type: string
       responses:
         200:
           description: successful operation
@@ -206,6 +246,24 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/New'
+        404:
+          description: error. User has not upvoted a new with the specified ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404new'
+        401:
+          description: 'Unauthorized: Invalid API key or no API key provided'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
   
   /news/upvoted:
     get:
@@ -357,27 +415,28 @@ paths:
       summary: Update About and email attributes of a user
       description: Update About and email attributes of the authed user and returns the attributes of that user
       operationId: updateProfile
+      requestBody:
+        description: Provide the new email or the new about you want to put on your profile
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  minLength: 1
+                  example: "thisismyemail@gmail.com"
+                about:
+                  type: string
+                  minLength: 1
+                  example: "This is my About, Hello HackerNews!"
       parameters:
-        - name: token
-          in: header
-          description: user's auth. token (API key)
-          required: true
-          schema:
-            type: string
-        - name: about
-          in: query
-          description: text that the user wants to put in his profile
-          required: false
-          schema:
-            type: string
-            format: text
-        - name: email
-          in: query
-          description: email that the user wants to put in his profile
-          required: false
-          schema:
-            type: string
-            format: email
+      - name: token
+        in: header
+        description: user's auth. token (API key)
+        required: true
+        schema:
+          type: string
       responses:
         200:
           description: successful operation
@@ -430,12 +489,12 @@ paths:
                   $ref: '#/components/examples/error401invalid'
     
                 
-  /users/otherprofile:
+  /users/otherprofile/{id}:
     get:
       tags:
       - users
       summary: Show the information of a specific user
-      description: Show the information of a specific user (other user). The user is identified by the email parameter
+      description: Show the information of a specific user (other user). The user is identified by the id parameter
       operationId: getOtherProfile
       parameters:
       - name: token
@@ -444,13 +503,13 @@ paths:
         required: true
         schema:
           type: string
-      - name: email
-        in: query
-        description: email of the user whose profile information is to be obtained
+      - name: id
+        in: path
+        description: id of the user whose profile information is to be obtained
         required: true
         schema:
           type: string
-          format: email
+          format: int64
       responses:
         200:
           description: successful operation
@@ -479,12 +538,12 @@ paths:
                 errorExample:
                   $ref: '#/components/examples/error400email'
                   
-  /users/news:
+  /users/news/{id}:
     get:
       tags:
       - users
       summary: Returns a list of user news 
-      description: Returns a list user news by the user identified with the specified email
+      description: Returns a list user news by the user identified with the specified id
       operationId: getUserNews
       parameters:
         - name: token
@@ -493,13 +552,13 @@ paths:
           required: true
           schema:
             type: string
-        - name: email
-          in: query
-          description: email of the user whose threads are to be obtained
-          required: false
+        - name: id
+          in: path
+          description: id of the user whose threads are to be obtained
+          required: true
           schema:
             type: integer
-            format: email
+            format: int64
             
       responses:
         200:
@@ -539,7 +598,7 @@ paths:
                 errorExample:
                   $ref: '#/components/examples/error400email'
                   
-  /comments/threads:
+  /comments/threads/{id}:
     get:
       tags:
       - comments
@@ -553,13 +612,13 @@ paths:
           required: true
           schema:
             type: string
-        - name: email
-          in: query
-          description: email of the user whose threads are to be obtained
-          required: false
+        - name: id
+          in: path
+          description: id of the user whose threads are to be obtained
+          required: true
           schema:
             type: integer
-            format: email
+            format: int64
             
       responses:
         200:
@@ -814,7 +873,7 @@ paths:
       - comments
       summary: Unvote a specific comment
       description: Unvote a specific comment (remove the vote). The comment is identified by the comment_id parameter
-      operationId: unvote
+      operationId: 'comments#unvote'
       parameters:
       - name: comment_id
         in: query
