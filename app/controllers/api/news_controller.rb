@@ -149,18 +149,22 @@ class Api::NewsController < ApplicationController
           @key = request.headers['token'].to_s
           if User.exists?(api_key: @key)  #token valid. identifica al user.
             @user  = User.find_by(api_key: @key)
-            if (!Likenew.exists?(user_id: @user.id, new_id: params[:newid]))  #si no està liked
-              @like = Likenew.new(user_id: @user.id, new_id: params[:newid])
-              @like.save
-              @publi = New.find(params[:newid])
-              @publi.points +=1
-              @publi.save
-              @author = User.find(@publi.user_id)
-              @author.karma +=1
-              @author.save
-              format.json { render json:{status:"OK", code:200, message: "New with ID '" + params[:newid] + "' upvoted successfully"}, status: :ok}  #el status: :ok nidea de si funcionarà
-            else   #si ja esta liked
-              format.json { render json:{status:"error", code:409, message: "New with ID '" + params[:newid] + "' has already been upvoted by user"}, status: :conflict} #el status: :conflict nidea de si funcionarà
+            if New.find(params[:newid]).user_id != @user.id
+              if (!Likenew.exists?(user_id: @user.id, new_id: params[:newid]))  #si no està liked
+                @like = Likenew.new(user_id: @user.id, new_id: params[:newid])
+                @like.save
+                @publi = New.find(params[:newid])
+                @publi.points +=1
+                @publi.save
+                @author = User.find(@publi.user_id)
+                @author.karma +=1
+                @author.save
+                format.json { render json:{status:"OK", code:200, message: "New with ID '" + params[:newid].to_s + "' upvoted successfully"}, status: :ok}  #el status: :ok nidea de si funcionarà
+              else   #si ja esta liked
+                format.json { render json:{status:"error", code:409, message: "New with ID '" + params[:newid].to_s + "' has already been upvoted by user"}, status: :conflict} #el status: :conflict nidea de si funcionarà
+              end
+            else
+              format.json { render json:{status:"error", code:409, message: "You cannot upvote your own new"}, status: :conflict}
             end
           else  #token no valid
             format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}

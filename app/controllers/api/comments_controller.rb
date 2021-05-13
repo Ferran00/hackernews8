@@ -60,18 +60,22 @@ class Api::CommentsController < ApplicationController
           @key = request.headers['token'].to_s
           if User.exists?(api_key: @key)  #token valid. identifica al user.
             @user  = User.find_by(api_key: @key)
-            if (!Likecomment.exists?(user_id: @user.id, comment_id: params[:comment_id]))  #si no està liked
-              @like = Likecomment.new(user_id: @user.id, comment_id: params[:comment_id])
-              @like.save
-              @com = Comment.find(params[:comment_id])
-              @com.points +=1
-              @com.save
-              @author = User.find(@com.user_id)
-              @author.karma +=1
-              @author.save
-              format.json { render json:{status:"OK", code:200, message: "Comment with ID '" + params[:comment_id] + "' upvoted successfully"}, status: :ok}  #el status: :ok nidea de si funcionarà
-            else   #si ja esta liked
-              format.json { render json:{status:"error", code:409, message: "Comment with ID '" + params[:comment_id] + "' has already been upvoted by user"}, status: :conflict} #el status: :conflict nidea de si funcionarà
+            if Comment.find(params[:comment_id]).user_id != @user.id
+              if (!Likecomment.exists?(user_id: @user.id, comment_id: params[:comment_id]))  #si no està liked
+                @like = Likecomment.new(user_id: @user.id, comment_id: params[:comment_id])
+                @like.save
+                @com = Comment.find(params[:comment_id])
+                @com.points +=1
+                @com.save
+                @author = User.find(@com.user_id)
+                @author.karma +=1
+                @author.save
+                format.json { render json:{status:"OK", code:200, message: "Comment with ID '" + params[:comment_id] + "' upvoted successfully"}, status: :ok}  #el status: :ok nidea de si funcionarà
+              else   #si ja esta liked
+                format.json { render json:{status:"error", code:409, message: "Comment with ID '" + params[:comment_id] + "' has already been upvoted by user"}, status: :conflict} #el status: :conflict nidea de si funcionarà
+              end
+            else
+              format.json { render json:{status:"error", code:409, message: "You cannot upvote your own comment"}, status: :conflict}
             end
           else  #token no valid
             format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
