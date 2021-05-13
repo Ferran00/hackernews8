@@ -125,13 +125,13 @@ class Api::CommentsController < ApplicationController
   def funcio(singleComment)
     repliesCompleted = Set[]
     @commentsAlreadyUsed.add(singleComment)
-    @comReplies = Comment.where(comment_id: com.id).order('points DESC').all
+    @comReplies = Comment.where(comment_id: singleComment.id).order('points DESC').all
     @comReplies.each do |rep, i|
       if not @commentsAlreadyUsed.exists(rep)
         repliesCompleted.add(funcio(rep))
       end
     end
-    return CommentComplete.new(com, repliesCompleted)
+    return CommentComplete.new(singleComment, repliesCompleted)
   end
   
   def threads
