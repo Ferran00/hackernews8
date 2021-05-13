@@ -99,7 +99,7 @@ class Api::UsersController < ApplicationController
               @newComments.each do |com, i|
                 @resultpartial.add(funcio(com))
               end
-              @result.add(@resultpartial)
+              @result.add(NewComplete.new(new, @resultpartial))
             end
             format.json { render json: @result, status: :ok}
           else
