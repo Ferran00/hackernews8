@@ -1,15 +1,42 @@
 class Api::NewsController < ApplicationController
   
+  CommentComplete = Struct.new(:comment, :replies) do
+  end
+  
+  NewComplete = Struct.new(:new, :comments) do
+  end
+  
+  def funcio(singleComment)
+    repliesCompleted = Set[]
+    @commentsAlreadyUsed.add(singleComment)
+    @comReplies = Comment.where(comment_id: singleComment.id).order('points DESC').all
+    @comReplies.each do |rep, i|
+      setRep = Set[]
+      setRep.add(rep)
+      if !@commentsAlreadyUsed.subset?(setRep)
+        repliesCompleted.add(funcio(rep))
+      end
+    end
+    return CommentComplete.new(singleComment, repliesCompleted)
+  end
+  
   def getInfoNew
-    
     respond_to do |format|
       if request.headers['token'].present?  #si hi ha token
         @key = request.headers['token'].to_s
         if User.exists?(api_key: @key)  #token valid
-          #cosa
+          @commentsAlreadyUsed = Set[]
           if New.exists?(params[:id])
             @new = New.find(params[:id])
-            format.json { render json: @new, status: :ok}
+            @resultpartial = Set[]
+            @newComments = Comment.where(:new_id => new.id).order('points DESC').all
+            @newComments.each do |com, i|
+              if com.comment_id.nil?
+                @resultpartial.add(funcio(com))
+              end
+            end
+            @result = NewComplete.new(new, @resultpartial)
+            format.json { render json: @result, status: :ok}
           else
             format.json { render json:{status:"error", code:404, message: "New with ID '" + params[:id] + "' not found"}, status: :not_found}
           end
