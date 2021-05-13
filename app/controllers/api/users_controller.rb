@@ -61,17 +61,37 @@ class Api::UsersController < ApplicationController
     end
   end
   
+  def funcio(singleComment)
+    repliesCompleted = Set[]
+    @commentsAlreadyUsed.add(singleComment)
+    @comReplies = Comment.where(comment_id: singleComment.id).order('points DESC').all
+    @comReplies.each do |rep, i|
+      setRep = Set[]
+      setRep.add(rep)
+      if !@commentsAlreadyUsed.subset?(setRep)
+        repliesCompleted.add(funcio(rep))
+      end
+    end
+    return CommentComplete.new(singleComment, repliesCompleted)
+  end
+  
   def getUserNews 
     respond_to do |format|
       if request.headers['token'].present?
         @key = request.headers['token'].to_s
         if User.exists?(api_key: @key)
-          if User.exists?(params[:id])
+          @commentsAlreadyUsed = Set[]
+          @userComments = nil
+          if User.exists?(params[:id])  #si existeix el user especificat
             @userNews = New.where(:user_id => params[:id]).order('points DESC').all
-            format.json { render json: @userNews, status: :ok}
+            @result = Set[]
+            @userNews.each do |com, i|
+              @result.add(funcio(com))
+            end
+            format.json { render json: @result, status: :ok}
           else
             format.json { render json: {error: "error", code: 404, message: "The user with ID: " + params[:id] + " doesn't exist"}, status: :not_found}
-          end   
+          end  
         else
           format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
         end
