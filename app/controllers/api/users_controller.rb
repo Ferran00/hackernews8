@@ -95,9 +95,11 @@ class Api::UsersController < ApplicationController
             @userNews = New.where(:user_id => params[:id]).order('points DESC').all
             @userNews.each do |new, i|
               @resultpartial = Set[]
-              @newComments = Comment.where(:new_id => new.id && comment_id.nil?).order('points DESC').all
+              @newComments = Comment.where(:new_id => new.id).order('points DESC').all
               @newComments.each do |com, i|
-                @resultpartial.add(funcio(com))
+                if com.comment_id.nil?
+                  @resultpartial.add(funcio(com))
+                end
               end
               @result.add(NewComplete.new(new, @resultpartial))
             end
