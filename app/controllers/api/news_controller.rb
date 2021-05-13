@@ -29,13 +29,13 @@ class Api::NewsController < ApplicationController
           if New.exists?(params[:id])
             @new = New.find(params[:id])
             @resultpartial = Set[]
-            @newComments = Comment.where(:new_id => new.id).order('points DESC').all
+            @newComments = Comment.where(:new_id => @new.id).order('points DESC').all
             @newComments.each do |com, i|
               if com.comment_id.nil?
                 @resultpartial.add(funcio(com))
               end
             end
-            @result = NewComplete.new(new, @resultpartial)
+            @result = NewComplete.new(@new, @resultpartial)
             format.json { render json: @result, status: :ok}
           else
             format.json { render json:{status:"error", code:404, message: "New with ID '" + params[:id] + "' not found"}, status: :not_found}
