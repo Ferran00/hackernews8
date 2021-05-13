@@ -136,7 +136,7 @@ class Api::CommentsController < ApplicationController
               @comReplies = Comment.where(comment_id: com.id).order('points DESC').all
               @result.add(CommentComplete.new(com, @comReplies))
             end            
-            format.json { render json: @userComments, status: :ok}
+            format.json { render json: @result, status: :ok}
           else
             format.json { render json: {error: "error", code: 404, message: "The user with ID: " + params[:id] + " doesn't exist"}, status: :not_found}
           end
