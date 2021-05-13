@@ -24,22 +24,49 @@ class Api::NewsController < ApplicationController
   
   def getNews 
     respond_to do |format|
-      @new = New.where(:isurl => 1).order('points DESC').all
-      format.json { render json: @new, status: :ok}
+      if request.headers['token'].present?  #si hi ha token
+        @key = request.headers['token'].to_s
+        if User.exists?(api_key: @key)  #token valid
+          @new = New.where(:isurl => 1).order('points DESC').all
+          format.json { render json: @new, status: :ok}
+        else  #token no valid
+          format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
+        end
+      else  #no han pasado token
+        format.json { render json:{status:"error", code:401, message: "The authentication token is not provided"}, status: :unauthorized}
+      end
     end
   end
   
   def getNewNews
     respond_to do |format|
-      @new = New.order('created_at DESC').all
-      format.json { render json: @new, status: :ok}
+      if request.headers['token'].present?  #si hi ha token
+        @key = request.headers['token'].to_s
+        if User.exists?(api_key: @key)  #token valid
+          @new = New.order('created_at DESC').all
+          format.json { render json: @new, status: :ok}
+        else  #token no valid
+          format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
+        end
+      else  #no han pasado token
+        format.json { render json:{status:"error", code:401, message: "The authentication token is not provided"}, status: :unauthorized}
+      end
     end
   end
   
   def getAskNews
     respond_to do |format|
-      @ask = New.where(:isurl => 0).order('points DESC').all
-      format.json { render json: @ask, status: :ok}
+      if request.headers['token'].present?  #si hi ha token
+        @key = request.headers['token'].to_s
+        if User.exists?(api_key: @key)  #token valid
+          @ask = New.where(:isurl => 0).order('points DESC').all
+          format.json { render json: @ask, status: :ok}
+        else  #token no valid
+          format.json { render json:{status:"error", code:401, message: "Invalid API key"}, status: :unauthorized}
+        end
+      else  #no han pasado token
+        format.json { render json:{status:"error", code:401, message: "The authentication token is not provided"}, status: :unauthorized}
+      end
     end
   end
         
