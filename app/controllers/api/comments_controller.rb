@@ -1,4 +1,10 @@
 class Api::CommentsController < ApplicationController
+  
+    
+  CommentComplete = Struct.new(:comment, :replies) do
+  end
+  
+  
   def createReply
     respond_to do |format|  
       if request.headers['token'].present?
@@ -29,7 +35,7 @@ class Api::CommentsController < ApplicationController
         if User.exists?(api_key: @key)
           if !params[:text].blank? && !params[:new_id].blank?
             @user = User.find_by(api_key: @key)
-            @comment = Comment.new(text: params[:text], points: 0, user_id: @user.id, new_id: params[:new_id]) #tenim hardcodejat usuari 1, ojo amb tenir un usuari
+            @comment = Comment.new(text: params[:text], points: 0, user_id: @user.id, new_id: params[:new_id])
             @comment.save
             format.json { render json: @comment, status: :ok}
           else
@@ -43,15 +49,7 @@ class Api::CommentsController < ApplicationController
       end
     end
   end
-   
-  def getThreadId(currentComment)
-    current_new_id = currentComment.new_id
-    while current_new_id.nil?
-      currentComment = Comment.find(currentComment.comment_id)
-      current_new_id = currentComment.new_id
-    end 
-    return current_new_id
-  end
+  
   
   def upvote
     respond_to do |format|
@@ -132,7 +130,12 @@ class Api::CommentsController < ApplicationController
           @commentsAlreadyPainted = Set[]
           @userComments = nil
           if User.exists?(params[:id])  #si existeix el user especificat
+            @result = Set[]
             @userComments = Comment.where(:user_id => params[:id]).order('points DESC').all
+            @userComments.each do |com, i|
+              @comReplies = Comment.where(comment_id: com.id).order('points DESC').all
+              @result.add(com, @comReplies)
+            end            
             format.json { render json: @userComments, status: :ok}
           else
             format.json { render json: {error: "error", code: 404, message: "The user with ID: " + params[:id] + " doesn't exist"}, status: :not_found}
@@ -146,6 +149,17 @@ class Api::CommentsController < ApplicationController
       end
     end
   end
+  
+  
+  def getThreadId(currentComment)
+    current_new_id = currentComment.new_id
+    while current_new_id.nil?
+      currentComment = Comment.find(currentComment.comment_id)
+      current_new_id = currentComment.new_id
+    end 
+    return current_new_id
+  end
+  
   
   def commentsUpvotedByUser
     respond_to do |format|
