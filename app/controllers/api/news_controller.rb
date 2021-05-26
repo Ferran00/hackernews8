@@ -121,7 +121,7 @@ class Api::NewsController < ApplicationController
                 @firstComment.save
                 format.json { render json:{ new: @new , comment: @firstComment}, status: 201} 
               else
-                @new = New.new(title: params[:title], url: params[:url], text: params[:text], isurl: isurl, points: params[:points],user_id: @user.id)
+                @new = New.new(title: params[:title], url: params[:url], text: params[:text], isurl: isurl, points: 0, user_id: @user.id)
                 @new.save
                 format.json { render json: @new, status: 201}
               end
