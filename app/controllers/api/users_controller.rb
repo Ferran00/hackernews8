@@ -1,9 +1,9 @@
 class Api::UsersController < ApplicationController
   
-  CommentComplete = Struct.new(:comment, :replies) do
+  CommentComplete = Struct.new(:comment, :replies, :author_username) do
   end
   
-  NewComplete = Struct.new(:new, :comments) do
+  NewComplete = Struct.new(:new, :comments, :author_username) do
   end
   
   def getProfile
@@ -79,7 +79,10 @@ class Api::UsersController < ApplicationController
         repliesCompleted.add(funcio(rep))
       end
     end
-    return CommentComplete.new(singleComment, repliesCompleted)
+    #nou per al client frontend
+    comment_author_username = User.find(singleComment.user_id).username
+    
+    return CommentComplete.new(singleComment, repliesCompleted, comment_author_username)
   end
   
   def getUserNews 
@@ -100,7 +103,10 @@ class Api::UsersController < ApplicationController
                   @resultpartial.add(funcio(com))
                 end
               end
-              @result.add(NewComplete.new(new, @resultpartial))
+              #nou per al client frontend
+              author_username = User.find(new.user_id).username
+              
+              @result.add(NewComplete.new(new, @resultpartial, author_username))
             end
             format.json { render json: @result, status: :ok}
           else

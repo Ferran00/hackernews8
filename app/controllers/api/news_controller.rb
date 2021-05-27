@@ -271,7 +271,8 @@ class Api::NewsController < ApplicationController
           @likeneww = Likenew.where(:user_id => @user.id).all
           @likeneww.each_with_index do |n,i|
             new = New.find(n.new_id)
-            @likedSubmissions.add(new)
+            author_username1 = User.find(new.user_id).username
+            @likedSubmissions.add(NewNUN.new(new, author_username1))
           end
           
           format.json { render json: @likedSubmissions, status: :ok}

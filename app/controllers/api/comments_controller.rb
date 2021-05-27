@@ -4,6 +4,10 @@ class Api::CommentsController < ApplicationController
   CommentComplete = Struct.new(:comment, :replies, :author_username) do
   end
   
+  #comment and username
+  CommentNUN = Struct.new(:comment, :author_username) do
+  end
+  
   
   def createReply
     respond_to do |format|  
@@ -193,7 +197,9 @@ class Api::CommentsController < ApplicationController
           @likecomment = Likecomment.where(:user_id => @user.id).all
           @likecomment.each_with_index do |lc,i|
             comment = Comment.find(lc.comment_id)
-            @likedComments.add(comment)
+            author_username1 = User.find(comment.user_id).username
+            #@likedComments.add(comment)
+            @likedComments.add(CommentNUN.new(comment, author_username1))
           end
           
           format.json { render json: @likedComments, status: :ok}
