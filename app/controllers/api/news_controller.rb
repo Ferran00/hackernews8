@@ -1,9 +1,9 @@
 class Api::NewsController < ApplicationController
   
-  CommentComplete = Struct.new(:comment, :replies) do
+  CommentComplete = Struct.new(:comment, :replies, :author_username) do
   end
   
-  NewComplete = Struct.new(:new, :comments) do
+  NewComplete = Struct.new(:new, :comments, :author_username) do
   end
   
   def funcio(singleComment)
@@ -17,7 +17,10 @@ class Api::NewsController < ApplicationController
         repliesCompleted.add(funcio(rep))
       end
     end
-    return CommentComplete.new(singleComment, repliesCompleted)
+    #nou per al client frontend
+    comment_author_username = User.find(singleComment.user_id).username
+    
+    return CommentComplete.new(singleComment, repliesCompleted, comment_author_username)
   end
   
   def getInfoNew
@@ -35,7 +38,10 @@ class Api::NewsController < ApplicationController
                 @resultpartial.add(funcio(com))
               end
             end
-            @result = NewComplete.new(@new, @resultpartial)
+            #nou per al client frontend
+            author_username = User.find(@new.user_id).username
+            
+            @result = NewComplete.new(@new, @resultpartial, author_username)
             format.json { render json: @result, status: :ok}
           else
             format.json { render json:{status:"error", code:404, message: "New with ID '" + params[:id] + "' not found"}, status: :not_found}
