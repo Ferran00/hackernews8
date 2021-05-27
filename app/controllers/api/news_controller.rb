@@ -184,9 +184,15 @@ class Api::NewsController < ApplicationController
               if (!Likenew.exists?(user_id: @user.id, new_id: params[:newid]))  #si no està liked
                 @like = Likenew.new(user_id: @user.id, new_id: params[:newid])
                 @like.save
+                
                 @publi = New.find(params[:newid])
-                @publi.points +=1
+                if !@publi.points.nil?
+                  @publi.points +=1
+                else
+                  @publi.points = 1
+                end
                 @publi.save
+                
                 @author = User.find(@publi.user_id)
                 @author.karma +=1
                 @author.save
@@ -222,9 +228,15 @@ class Api::NewsController < ApplicationController
             
             if (Likenew.exists?(user_id: @user.id, new_id: params[:newid]))  #si està liked
               Likenew.find_by(user_id: @user.id, new_id: params[:newid]).destroy
+              
               @publi = New.find(params[:newid])
-              @publi.points -=1
+              if !@publi.points.nil?
+                @publi.points -=1
+              else
+                @publi.points = 0
+              end
               @publi.save
+              
               @author = User.find(@publi.user_id)
               @author.karma -=1
               @author.save
