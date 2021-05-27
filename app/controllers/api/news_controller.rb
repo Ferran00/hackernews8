@@ -169,7 +169,7 @@ class Api::NewsController < ApplicationController
       end
     end
   end
-      
+  #    
       
   def upvote
     respond_to do |format|
