@@ -1,7 +1,7 @@
 class Api::CommentsController < ApplicationController
   
     
-  CommentComplete = Struct.new(:comment, :replies) do
+  CommentComplete = Struct.new(:comment, :replies, :author_username) do
   end
   
   
@@ -137,7 +137,10 @@ class Api::CommentsController < ApplicationController
         repliesCompleted.add(funcio(rep))
       end
     end
-    return CommentComplete.new(singleComment, repliesCompleted)
+    #nou per al client frontend
+    comment_author_username = User.find(singleComment.user_id).username
+    
+    return CommentComplete.new(singleComment, repliesCompleted, comment_author_username)
   end
   
   def threads
